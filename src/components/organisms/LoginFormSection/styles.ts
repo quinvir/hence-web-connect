@@ -10,7 +10,7 @@ export const Wrapper = styled.section`
   align-items: center;
   justify-content: center;
   padding: 0px 80px;
-  gap: 48px;
+  gap: 24px;
   align-self: stretch;
 `;
 
