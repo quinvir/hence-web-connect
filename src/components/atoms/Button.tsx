@@ -10,11 +10,11 @@ interface ButtonProps {
   fontWeight?: number;
   lineHeight?: string;
   letterSpacing?: string;
-  borderRadius?: string;
+  $borderRadius?: string;
 }
 
 const Button = styled.button<ButtonProps>`
-  border-radius: ${({ borderRadius }) => borderRadius || "12px"};
+  border-radius: ${({ $borderRadius }) => $borderRadius || "12px"};
   cursor: pointer;
   background-color: ${({ $backgroudnColor }) => $backgroudnColor || "#fff"};
   font-size: ${({ fontSize }) => fontSize || "16px"};
@@ -28,7 +28,6 @@ const Button = styled.button<ButtonProps>`
   transition: filter 0.2s ease;
 
   &:disabled {
-    background-color: #ccc;
     cursor: not-allowed;
   }
 `;

@@ -12,7 +12,7 @@ export const Left = styled.div`
 `;
 
 export const Right = styled.div`
-  width: 720px;
+  width: 500px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
