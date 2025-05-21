@@ -21,7 +21,7 @@ const EmailLoginForm = () => {
   };
 
   const onValid = (data: any) => {
-    console.log("로그인 요청 데이터:", data);
+    // console.log("로그인 요청 데이터:", data);
   };
 
   return (

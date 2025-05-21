@@ -5,6 +5,7 @@ import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
 import UserProfileEditPage from "./pages/UserProfileEditPage";
 import SignupProfile from "./pages/SignupProfile";
+import BusinessProfileEditPage from "./pages/BusinessProfileEditPage";
 
 function App() {
   return (
@@ -14,12 +15,16 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signup-profile" element={<SignupProfile />} />
         <Route path="/welcome" element={<Welcome />} />
+        <Route
+          path="/profile/business/edit"
+          element={<BusinessProfileEditPage />}
+        />
 
         {/* 공통 레이아웃 */}
         <Route element={<DefaultLayout />}>
           {/* <Route path="/home" element={<Home />} /> */}
           <Route path="/profile/edit" element={<UserProfileEditPage />} />
-          {/* <Route path="/points" element={<Points />} />
+          {/* <Route path="/points" element={<Points />} />ㅇㅇ
           <Route path="/settings" element={<Settings />} /> */}
         </Route>
       </Routes>

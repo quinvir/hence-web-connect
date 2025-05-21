@@ -1,7 +1,6 @@
-import styled from "styled-components";
-import Input from "../atoms/Input";
-import { Control, Controller, RegisterOptions } from "react-hook-form";
 import { useState } from "react";
+import styled from "styled-components";
+import { Control, Controller, RegisterOptions } from "react-hook-form";
 
 const FieldWrapper = styled.div<{ $gap?: string }>`
   display: flex;
@@ -11,56 +10,66 @@ const FieldWrapper = styled.div<{ $gap?: string }>`
 `;
 
 const Label = styled.label<{ $error?: boolean }>`
-  display: flex;
-  align-items: center;
   font-size: 14px;
   font-weight: 400;
   color: ${({ $error }) => ($error ? "#e60000" : "#222")};
+`;
 
-  span {
-    color: red;
-    margin-left: 2px;
-    font-size: 14px;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    position: relative;
-    top: 1px;
+const Textarea = styled.textarea<{ $error?: boolean }>`
+  width: 100%;
+  height: 120px;
+  padding: 16px;
+  color: #000;
+  font-family: "SUIT Variable";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
+  letter-spacing: -0.25px;
+  border-radius: 12px;
+  border: 1px solid ${({ $error }) => ($error ? "#e60000" : "#FAFAFA")};
+  background-color: #fafafa;
+  resize: none;
+
+  &:focus {
+    outline: none;
+    border: 1px solid #2b77f5;
+  }
+
+  &::placeholder {
+    color: #999;
+    font-family: "SUIT Variable";
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 140%;
+    letter-spacing: -0.25px;
   }
 `;
 
 const ErrorMessage = styled.p`
-  align-self: stretch;
   color: #e60000;
-  font-family: "SUIT Variable";
   font-size: 12px;
-  font-weight: 400;
-  line-height: 140%;
-  letter-spacing: -0.25px;
+  margin-top: -4px;
 `;
 
 interface Props {
-  label: React.ReactNode;
-  type: string;
-  placeholder: string;
+  label: string;
   name: string;
-  signup?: boolean;
-  gap?: string;
-  errorMessage?: string;
+  placeholder?: string;
   control: Control<any>;
   rules?: RegisterOptions;
+  errorMessage?: string;
+  gap?: string;
 }
 
-const InputField = ({
+const TextareaField = ({
   label,
-  type,
-  placeholder,
   name,
-  signup,
-  gap,
-  errorMessage,
+  placeholder,
   control,
   rules,
+  errorMessage,
+  gap,
 }: Props) => {
   const hasError = !!errorMessage;
   const [isFocused, setIsFocused] = useState(false);
@@ -73,24 +82,24 @@ const InputField = ({
       <Controller
         name={name}
         control={control}
-        defaultValue=""
-        rules={rules}
-        render={({ field: { onChange, onBlur, ...rest } }) => (
-          <Input
-            {...rest}
-            type={type}
+        rules={{
+          maxLength: {
+            value: 500,
+            message: "최대 200자까지 입력할 수 있어요.",
+          },
+          ...rules,
+        }}
+        render={({ field }) => (
+          <Textarea
             id={name}
+            {...field}
             placeholder={isFocused ? "" : placeholder}
-            $signup={signup}
             $error={hasError}
-            onChange={(e) => {
-              const noSpaces = e.target.value.replace(/\s/g, "");
-              onChange(noSpaces);
-            }}
+            maxLength={200}
             onFocus={() => setIsFocused(true)}
             onBlur={(e) => {
               setIsFocused(false);
-              onBlur();
+              field.onBlur();
             }}
           />
         )}
@@ -100,4 +109,4 @@ const InputField = ({
   );
 };
 
-export default InputField;
+export default TextareaField;

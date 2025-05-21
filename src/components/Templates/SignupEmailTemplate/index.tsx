@@ -38,7 +38,7 @@ const SignupEmailTemplate = () => {
   const navigate = useNavigate();
 
   const onSignupHandler = (data: any) => {
-    console.log("회원가입 데이터", data);
+    // console.log("회원가입 데이터", data);
 
     navigate("/signup-profile");
   };

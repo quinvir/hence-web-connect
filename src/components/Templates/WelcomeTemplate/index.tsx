@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../../atoms/Button";
 import { ButtonBox, FormCardWrapper, Header, ImageBox } from "./styles";
+import { useUserStore } from "../../../stores/userStore";
 
 const WelcomeTemplate = () => {
-  const nickname = localStorage.getItem("nickname");
+  const nickname = useUserStore((state) => state.nickname);
 
   const navigate = useNavigate();
 
@@ -15,7 +16,7 @@ const WelcomeTemplate = () => {
     <FormCardWrapper>
       <Header>
         <h1>
-          <span>HENCE CONNECT</span>에 오신
+          <span>HENCE Connect</span>에 오신
         </h1>
         <h1>
           <span>{nickname}님</span>을 환영해요 🎉

@@ -102,10 +102,10 @@ const PasswordField = ({
         control={control}
         defaultValue=""
         rules={rules}
-        render={({ field }) => (
+        render={({ field: { onChange, ...rest } }) => (
           <InputWithIconWrapper>
             <StyledInput
-              {...field}
+              {...rest}
               type={visible ? "text" : "password"}
               id={name}
               placeholder={placeholder}
@@ -113,6 +113,11 @@ const PasswordField = ({
               minLength={8}
               maxLength={20}
               $signup={signup}
+              onChange={(e) => {
+                if (!/\s/.test(e.target.value)) {
+                  onChange(e.target.value);
+                }
+              }}
             />
             <ToggleButton onClick={() => setVisible((v) => !v)} type="button">
               <img
