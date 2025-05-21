@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const FormCardWrapper = styled.section`
+export const FormCardWrapper = styled.div`
   position: relative;
   width: 640px;
   height: auto;
@@ -8,12 +8,13 @@ export const FormCardWrapper = styled.section`
   min-width: 500px;
   max-width: 720px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
   padding: 64px 0;
   background-color: #fff;
   border-radius: 20px;
+  border: 1px solid red;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
 `;
 
 export const BackButtonBox = styled.div`

@@ -1,11 +1,17 @@
 import Header from "../../organisms/Header";
 import { Main } from "./styles";
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthLayout = ({
+  children,
+  variant,
+}: {
+  children: React.ReactNode;
+  variant?: "default" | "white";
+}) => {
   return (
     <>
       <Header variant="auth" />
-      <Main>{children}</Main>
+      <Main $variant={variant}>{children}</Main>
     </>
   );
 };

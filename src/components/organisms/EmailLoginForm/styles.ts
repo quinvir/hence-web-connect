@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Button from "../../atoms/Button";
 
 export const Form = styled.form`
   display: flex;
@@ -19,19 +20,23 @@ export const SubRow = styled.div`
 `;
 
 export const TextButton = styled.div`
-  color: #646464;
   text-align: center;
   font-family: "SUIT Variable";
-  font-size: 14px;
-  font-weight: 400;
   line-height: 140%;
   letter-spacing: -0.25px;
+`;
+
+export const UnderlinedTextButton = styled(Button)`
+  font-family: "SUIT Variable";
   text-decoration-line: underline;
   text-decoration-style: solid;
   text-decoration-skip-ink: auto;
   text-decoration-thickness: auto;
   text-underline-offset: auto;
   text-underline-position: from-font;
+  color: #646464;
+  font-size: 14px;
+  font-weight: 400;
 `;
 
 export const FooterText = styled.div`

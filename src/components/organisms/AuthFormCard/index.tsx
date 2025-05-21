@@ -8,12 +8,19 @@ interface AuthFormCardProps {
   showBackButton?: boolean;
 }
 
-const AuthFormCard = ({ title, subtitle, children }: AuthFormCardProps) => {
+const AuthFormCard = ({
+  title,
+  subtitle,
+  children,
+  showBackButton = true,
+}: AuthFormCardProps) => {
   return (
     <FormCardWrapper>
-      <BackButtonBox>
-        <BackButton />
-      </BackButtonBox>
+      {showBackButton && title !== "비밀번호 찾기" && (
+        <BackButtonBox>
+          <BackButton />
+        </BackButtonBox>
+      )}
       <TextBox>
         <h2>{title}</h2>
         {subtitle && <p>{subtitle}</p>}
