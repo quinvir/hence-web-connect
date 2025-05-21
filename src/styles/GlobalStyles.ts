@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
   *, *::before, *::after {
@@ -7,8 +7,15 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
   }
 
+  @font-face {
+    font-family: "SUIT Variable";
+    src: url("/fonts/SUIT-Variable.ttf") format("truetype");
+    font-weight: 100 900;
+    font-display: swap;
+  }
+
   html, body {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    font-family: "SUIT Variable", 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI',
       Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
       sans-serif;
     background-color: #fff;

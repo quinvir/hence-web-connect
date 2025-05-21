@@ -49,6 +49,7 @@ interface Props {
   errorMessage?: string;
   control: Control<any>;
   rules?: RegisterOptions;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
 }
 
 const InputField = ({
@@ -75,17 +76,121 @@ const InputField = ({
         control={control}
         defaultValue=""
         rules={rules}
-        render={({ field: { onChange, onBlur, ...rest } }) => (
+        render={({ field: { value, onChange, onBlur, ...rest } }) => (
           <Input
             {...rest}
             type={type}
             id={name}
+            value={value}
             placeholder={isFocused ? "" : placeholder}
             $signup={signup}
             $error={hasError}
+            inputMode={name === "email" ? "email" : undefined}
+            maxLength={name === "nickname" ? 20 : undefined}
             onChange={(e) => {
-              const noSpaces = e.target.value.replace(/\s/g, "");
-              onChange(noSpaces);
+              let value = e.target.value;
+              let processedValue = value;
+
+              if (name === "nickname" || name === "email") {
+                processedValue = value.replace(/\s/g, ""); // 전체 공백 제거
+              } else if (name === "phone") {
+                const numbersOnly = value.replace(/[^0-9]/g, "");
+
+                // 서울 (02)
+                if (/^02/.test(numbersOnly)) {
+                  if (numbersOnly.length <= 2) {
+                    processedValue = numbersOnly;
+                  } else if (numbersOnly.length <= 5) {
+                    processedValue = numbersOnly.replace(
+                      /(\d{2})(\d{1,3})/,
+                      "$1-$2"
+                    );
+                  } else if (numbersOnly.length <= 9) {
+                    processedValue = numbersOnly
+                      .slice(0, 9)
+                      .replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
+                  } else {
+                    processedValue = numbersOnly
+                      .slice(0, 10)
+                      .replace(/(\d{2})(\d{4})(\d{4})/, "$1-$2-$3");
+                  }
+                }
+
+                // 휴대폰 010, 011~019
+                else if (/^01[016789]/.test(numbersOnly)) {
+                  if (/^010/.test(numbersOnly)) {
+                    // 010은 3-4-4
+                    if (numbersOnly.length <= 3) {
+                      processedValue = numbersOnly;
+                    } else if (numbersOnly.length <= 7) {
+                      processedValue = numbersOnly.replace(
+                        /(\d{3})(\d{1,4})/,
+                        "$1-$2"
+                      );
+                    } else {
+                      processedValue = numbersOnly.replace(
+                        /(\d{3})(\d{4})(\d{4})/,
+                        "$1-$2-$3"
+                      );
+                    }
+                  } else {
+                    // 011~019는 3-3-4
+                    if (numbersOnly.length <= 3) {
+                      processedValue = numbersOnly;
+                    } else if (numbersOnly.length <= 6) {
+                      processedValue = numbersOnly.replace(
+                        /(\d{3})(\d{1,3})/,
+                        "$1-$2"
+                      );
+                    } else {
+                      processedValue = numbersOnly.replace(
+                        /(\d{3})(\d{3})(\d{4})/,
+                        "$1-$2-$3"
+                      );
+                    }
+                  }
+                }
+
+                // 지역번호 (031~069)
+                else if (/^0[3-6][1-9]/.test(numbersOnly)) {
+                  if (numbersOnly.length <= 3) {
+                    processedValue = numbersOnly;
+                  } else if (numbersOnly.length <= 6) {
+                    processedValue = numbersOnly.replace(
+                      /(\d{3})(\d{1,3})/,
+                      "$1-$2"
+                    );
+                  } else {
+                    processedValue = numbersOnly
+                      .slice(0, 11)
+                      .replace(/(\d{3})(\d{3,4})(\d{4})/, "$1-$2-$3");
+                  }
+                }
+
+                // 이외 번호는 숫자만 유지(하이픈 제외)
+                else {
+                  processedValue = numbersOnly;
+                }
+              } else if (name === "businessNumber") {
+                const numbersOnly = value.replace(/[^0-9]/g, "").slice(0, 10);
+                if (numbersOnly.length <= 3) {
+                  processedValue = numbersOnly;
+                } else if (numbersOnly.length <= 5) {
+                  processedValue = numbersOnly.replace(
+                    /(\d{3})(\d{1,2})/,
+                    "$1-$2"
+                  );
+                } else {
+                  processedValue = numbersOnly.replace(
+                    /(\d{3})(\d{2})(\d{1,5})/,
+                    "$1-$2-$3"
+                  );
+                }
+              } else {
+                processedValue = value.replace(/^\s+/, ""); // 앞 공백 제거
+              }
+
+              onChange(processedValue);
             }}
             onFocus={() => setIsFocused(true)}
             onBlur={(e) => {

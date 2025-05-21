@@ -35,6 +35,10 @@ const BusinessProfileEditTemplate = () => {
 
   const [image, setImage] = useState<string | null>(null);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState<"fileSize" | "saveConfirm" | null>(
+    null
+  );
+
   const navigate = useNavigate();
 
   const handleAlertConfirm = () => {
@@ -44,37 +48,37 @@ const BusinessProfileEditTemplate = () => {
   const onSubmit = (data: any) => {
     // console.log("비즈니스 프로필 데이터:", data);
 
+    setAlertType("saveConfirm");
     setAlertOpen(true);
   };
 
   return (
     <Container>
-      <h1>비즈니스 프로필 수정하기</h1>
-      {/* {alertOpen && (
-        <AlertModal
-          type="confirmOnly"
-          message="비지니스 프로필이 저장 완료되었습니다."
-          onConfirm={handleAlertConfirm}
-          onCancel={handleAlertConfirm}
-        />
-      )} */}
-
+      <h1>비즈니스 기본 정보</h1>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ProfileImageUploader
           image={image}
           setImage={setImage}
           variant="default"
-          onFileTooLarge={() => setAlertOpen(true)}
+          onFileTooLarge={() => {
+            setAlertType("fileSize");
+            setAlertOpen(true);
+          }}
         />
+
         {alertOpen && (
           <AlertModal
             type="confirmOnly"
-            message="2MB 이하의 이미지만 업로드할 수 있어요."
+            title={alertType === "fileSize" ? "파일 용량 초과" : "저장 완료"}
+            message={
+              alertType === "fileSize"
+                ? "2MB 이하의 이미지만 업로드할 수 있어요."
+                : "비즈니스 프로필이 저장되었어요."
+            }
             onConfirm={handleAlertConfirm}
             onCancel={handleAlertConfirm}
           />
         )}
-
         <InputField
           label={
             <>
@@ -97,7 +101,8 @@ const BusinessProfileEditTemplate = () => {
             </>
           }
           name="email"
-          type="email"
+          inputMode="email"
+          type="text"
           placeholder="이메일을 입력하세요"
           control={control}
           signup
@@ -125,9 +130,43 @@ const BusinessProfileEditTemplate = () => {
           errorMessage={errors.phone?.message}
           rules={{
             required: "연락처는 필수입니다.",
-            pattern: {
-              value: /^[0-9]*$/,
-              message: "숫자만 입력 가능합니다.",
+            validate: (value) => {
+              if (!value) return true;
+
+              const [a = "", b = "", c = ""] = value.split("-");
+
+              if (!a || !b || !c) return "전화번호 형식이 잘못되었습니다.";
+
+              // 휴대폰
+              if (/^01[016789]$/.test(a)) {
+                if (a === "010") {
+                  if (b.length !== 4) return "010 번호는 가운데 4자리여야 해요";
+                } else {
+                  if (b.length !== 3)
+                    return `${a} 번호는 가운데 3자리여야 해요`;
+                }
+
+                if (c.length !== 4) return "휴대폰 번호는 4자리로 끝나야 해요";
+                return true;
+              }
+
+              // 서울
+              if (a === "02") {
+                if (b.length < 3 || b.length > 4)
+                  return "서울 번호의 가운데 자리는 3~4자리여야 해요";
+                if (c.length !== 4) return "전화번호는 4자리로 끝나야 해요";
+                return true;
+              }
+
+              // 지역번호
+              if (/^0[3-6][1-9]$/.test(a)) {
+                if (b.length < 3 || b.length > 4)
+                  return "지역 번호의 가운데 자리는 3~4자리여야 해요";
+                if (c.length !== 4) return "전화번호는 4자리로 끝나야 해요";
+                return true;
+              }
+
+              return "유효한 전화번호 형식이 아닙니다.";
             },
           }}
         />
@@ -162,8 +201,8 @@ const BusinessProfileEditTemplate = () => {
           rules={{
             required: "사업자 번호는 필수입니다.",
             pattern: {
-              value: /^[0-9]*$/,
-              message: "숫자만 입력 가능합니다.",
+              value: /^\d{3}-\d{2}-\d{5}$/,
+              message: "사업자등록번호 형식이 올바르지 않습니다.",
             },
           }}
         />

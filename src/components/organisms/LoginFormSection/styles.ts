@@ -9,7 +9,7 @@ export const Wrapper = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0px 80px;
+  padding: 0px 56px;
   gap: 24px;
   align-self: stretch;
 `;
@@ -27,7 +27,7 @@ export const TextBox = styled.div`
 
   h1 {
     color: #000;
-    font-size: 36px;
+    font-size: 24px;
     font-weight: 700;
   }
 

@@ -30,6 +30,9 @@ const UserProfileEditTemplate = () => {
   const [image, setImage] = useState<string | null>(null);
 
   const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState<"fileSize" | "saveConfirm" | null>(
+    null
+  );
 
   const navigate = useNavigate();
 
@@ -39,6 +42,9 @@ const UserProfileEditTemplate = () => {
 
   const onSubmit = (data: any) => {
     // console.log("프로필 수정 데이터:", data);
+
+    setAlertType("saveConfirm");
+    setAlertOpen(true);
   };
 
   return (
@@ -56,29 +62,30 @@ const UserProfileEditTemplate = () => {
           + 비즈니스 프로필
         </Button>
       </TempBox>
-      {/* {alertOpen && (
-        <AlertModal
-          type="confirmOnly"
-          message="프로필이 저장되었습니다"
-          onConfirm={handleAlertConfirm}
-          onCancel={handleAlertConfirm}
-        />
-      )} */}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ProfileImageUploader
           image={image}
           setImage={setImage}
           variant="user"
-          onFileTooLarge={() => setAlertOpen(true)}
+          onFileTooLarge={() => {
+            setAlertType("fileSize");
+            setAlertOpen(true);
+          }}
         />
         {alertOpen && (
           <AlertModal
             type="confirmOnly"
-            message="2MB 이하의 이미지만 업로드할 수 있어요."
+            title={alertType === "fileSize" ? "파일 용량 초과" : "저장 완료"}
+            message={
+              alertType === "fileSize"
+                ? "2MB 이하의 이미지만 업로드할 수 있어요."
+                : "프로필이 저장되었어요."
+            }
             onConfirm={handleAlertConfirm}
             onCancel={handleAlertConfirm}
           />
         )}
+
         <InputField
           label={
             <>

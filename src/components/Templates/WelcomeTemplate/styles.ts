@@ -14,6 +14,8 @@ export const FormCardWrapper = styled.section`
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 24px;
 `;
 
@@ -25,7 +27,7 @@ export const Header = styled.header`
   h1 {
     color: #000;
     font-family: "SUIT Variable";
-    font-size: 36px;
+    font-size: 24px;
     font-style: normal;
     font-weight: 400;
   }
@@ -34,7 +36,6 @@ export const Header = styled.header`
     color: #000;
     text-align: center;
     font-family: "Titan One";
-    font-size: 36px;
     font-style: normal;
     font-weight: 400;
     line-height: 160%;
@@ -44,7 +45,6 @@ export const Header = styled.header`
   h1:last-child span {
     fcolor: #000;
     font-family: "SUIT Variable";
-    font-size: 36px;
     font-style: normal;
     font-weight: 700;
     line-height: 160%;

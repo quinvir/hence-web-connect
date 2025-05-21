@@ -61,6 +61,7 @@ const SignupProfileTemplate = () => {
           {alertOpen && (
             <AlertModal
               type="confirmOnly"
+              title="파일 용량 초과"
               message="2MB 이하의 이미지만 업로드할 수 있어요."
               onConfirm={handleAlertConfirm}
               onCancel={handleAlertConfirm}
