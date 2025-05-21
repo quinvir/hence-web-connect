@@ -10,6 +10,8 @@ const Input = styled.input<{ $signup?: boolean; $error?: boolean }>`
       $error ? "#e60000" : $signup ? "#FAFAFA" : "#d9d9d9"};
   border-radius: 12px;
   color: #000;
+  font-size: 16px;
+  font-weight: 400;
   background-color: ${({ $signup }) => $signup && "#FAFAFA"};
 
   &:focus {

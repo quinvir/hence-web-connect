@@ -10,6 +10,7 @@ import {
   InputFieldWrapper,
   NoticeBox,
 } from "./styles";
+import { useNavigate } from "react-router-dom";
 
 const SignupEmailTemplate = () => {
   const {
@@ -34,8 +35,12 @@ const SignupEmailTemplate = () => {
     !errors.email &&
     !errors.password;
 
+  const navigate = useNavigate();
+
   const onSignupHandler = (data: any) => {
     console.log("회원가입 데이터", data);
+
+    navigate("/signup-profile");
   };
 
   return (
