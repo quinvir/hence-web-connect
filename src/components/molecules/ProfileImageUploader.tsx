@@ -1,5 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import styled from "styled-components";
+import fileToBase64 from "../../utils/fileToBase64";
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,9 +27,10 @@ const ProfileImageLabel = styled.div`
 const UploadBox = styled.label`
   position: relative;
   display: flex;
+  gap: 24px;
   height: 88px;
   padding: 24px;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   align-self: stretch;
   cursor: pointer;
@@ -67,28 +69,35 @@ const Instruction = styled.div`
 const PreviewWrapper = styled.div`
   position: relative;
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 80px;
   height: 80px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 70px;
-  background: #f0f0f0;
   margin: 0 auto;
-  gap: 10px;
+`;
+
+const ImageOuterCircle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
   padding: 4px;
+  border-radius: 70px;
+  background-color: #f0f0f0;
 `;
 
 const PreviewImage = styled.img`
-  width: 64px;
-  height: 64px;
+  width: 100%;
+  height: 100%;
   border-radius: 70px;
   object-fit: cover;
 `;
 
 const RemoveButton = styled.button`
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -1px;
+  right: -1px;
   width: 32px;
   height: 32px;
   color: #fff;
@@ -98,7 +107,7 @@ const RemoveButton = styled.button`
   cursor: pointer;
 `;
 
-const ImageBox = styled.div`
+const ImageBox = styled.div<{ $isUserProfile?: boolean }>`
   display: flex;
   width: 64px;
   height: 64px;
@@ -106,26 +115,43 @@ const ImageBox = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 12px;
-  background: #fafafa;
+  background: ${({ $isUserProfile }) =>
+    $isUserProfile ? "#2B77F51A" : "#fafafa"};
 `;
 
 interface Props {
   image: string | null;
   setImage: (url: string | null) => void;
+  variant?: "default" | "user";
+  onFileTooLarge?: () => void;
 }
 
-const ProfileImageUploader = ({ image, setImage }: Props) => {
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+const ProfileImageUploader = ({
+  image,
+  setImage,
+  variant = "default",
+  onFileTooLarge,
+}: Props) => {
+  const MAX_FILE_SIZE_MB = 2;
+  const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
+
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      alert("2MB 이하만 업로드 가능합니다.");
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      onFileTooLarge?.();
       return;
     }
 
-    const previewURL = URL.createObjectURL(file);
-    setImage(previewURL);
+    try {
+      const base64 = await fileToBase64(file);
+      setImage(base64);
+    } catch (error) {
+      console.error("파일 변환 실패", error);
+    }
   };
 
   const handleRemove = () => setImage(null);
@@ -137,10 +163,14 @@ const ProfileImageUploader = ({ image, setImage }: Props) => {
           프로필 사진 <span>(선택)</span>
         </p>
       </ProfileImageLabel>
-
       {image ? (
         <PreviewWrapper>
-          <PreviewImage src={image} alt="Preview profile" />
+          <ImageOuterCircle>
+            <PreviewImage
+              src={image}
+              alt={variant === "user" ? "User profile" : "Business profile"}
+            />
+          </ImageOuterCircle>
           <RemoveButton onClick={handleRemove}>
             <img
               src="/assets/images/icon/upload-remove.svg"
@@ -152,9 +182,13 @@ const ProfileImageUploader = ({ image, setImage }: Props) => {
       ) : (
         <UploadBox>
           <input type="file" accept="image/*" onChange={handleFileChange} />
-          <ImageBox>
+          <ImageBox $isUserProfile={variant === "user"}>
             <img
-              src="/assets/images/icon/upload-image.png"
+              src={
+                variant === "user"
+                  ? "/assets/images/img/upload-image-user.png"
+                  : "/assets/images/img/upload-image.png"
+              }
               alt="placeholder"
               style={{ width: "32px", height: "32px" }}
             />

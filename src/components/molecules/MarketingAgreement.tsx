@@ -18,7 +18,7 @@ const Label = styled.label`
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 12px;
 `;
 
 const Option = styled.button<{ selected: boolean }>`

@@ -1,10 +1,10 @@
-import { Controller } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const Label = styled.label`
@@ -33,24 +33,22 @@ const Option = styled.button<{ selected: boolean }>`
 `;
 
 interface Props {
-  control: any;
+  control: Control<any>;
   errorMessage?: string;
 }
 
-const GenderSelector = ({ control, errorMessage }: Props) => {
+const BusinessTypeSelector = ({ control, errorMessage }: Props) => {
   const options = [
-    { value: "female", label: "여성" },
-    { value: "male", label: "남성" },
-    { value: "private", label: "비밀이에요" },
+    { value: "corporate", label: "법인 사업자" },
+    { value: "personal", label: "개인 사업자" },
   ];
 
   return (
     <Wrapper>
-      <Label>성별</Label>
+      <Label>사업 형태</Label>
       <Controller
-        name="gender"
+        name="businessType"
         control={control}
-        defaultValue="female"
         render={({ field }) => (
           <ButtonGroup>
             {options.map((opt) => (
@@ -73,4 +71,4 @@ const GenderSelector = ({ control, errorMessage }: Props) => {
   );
 };
 
-export default GenderSelector;
+export default BusinessTypeSelector;

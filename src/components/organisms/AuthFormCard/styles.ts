@@ -33,7 +33,7 @@ export const TextBox = styled.div`
   h2 {
     color: #000;
     font-family: "SUIT Variable";
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 700;
     line-height: 140%;
     letter-spacing: -0.25px;
@@ -42,7 +42,7 @@ export const TextBox = styled.div`
   p {
     color: #646464;
     font-family: "SUIT Variable";
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 400;
     line-height: 140%;
     letter-spacing: -0.25px;

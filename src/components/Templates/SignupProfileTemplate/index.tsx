@@ -9,6 +9,8 @@ import { useState } from "react";
 import GenderSelector from "../../molecules/GenderSelector";
 import MarketingAgreement from "../../molecules/MarketingAgreement";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../../stores/userStore";
+import AlertModal from "../../molecules/AlertModal";
 
 const SignupProfileTemplate = () => {
   const {
@@ -16,7 +18,7 @@ const SignupProfileTemplate = () => {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: {
       nickname: "",
       gender: "female",
@@ -25,13 +27,22 @@ const SignupProfileTemplate = () => {
   });
 
   const [image, setImage] = useState<string | null>(null);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  const onSubmit = (data: any) => {
-    console.log("회원가입 데이터:", data);
+  const { setNickname, setProfileImage } = useUserStore();
 
-    localStorage.setItem("nickname", data.nickname);
+  const handleAlertConfirm = () => {
+    setAlertOpen(false);
+  };
+
+  const onSubmit = (data: any) => {
+    // console.log("회원가입 데이터:", data);
+
+    setNickname(data.nickname);
+    setProfileImage(image);
+
     navigate("/welcome");
   };
 
@@ -41,14 +52,27 @@ const SignupProfileTemplate = () => {
       subtitle={<>작성한 정보는 얼마든지 변경이 가능하니 걱정마세요 😌</>}
     >
       <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-        {/* <DashedBorderBox> */}
         <InputFieldWrapper>
-          <ProfileImageUploader image={image} setImage={setImage} />
-
-          {/* </DashedBorderBox> */}
-
+          <ProfileImageUploader
+            image={image}
+            setImage={setImage}
+            onFileTooLarge={() => setAlertOpen(true)}
+          />
+          {alertOpen && (
+            <AlertModal
+              type="confirmOnly"
+              title="파일 용량 초과"
+              message="2MB 이하의 이미지만 업로드할 수 있어요."
+              onConfirm={handleAlertConfirm}
+              onCancel={handleAlertConfirm}
+            />
+          )}
           <InputField
-            label="닉네임"
+            label={
+              <>
+                닉네임 <span style={{ color: "#E60000" }}>*</span>
+              </>
+            }
             name="nickname"
             type="text"
             placeholder="사용하실 닉네임을 입력하세요"
@@ -60,11 +84,15 @@ const SignupProfileTemplate = () => {
               required: "닉네임은 필수 입력입니다.",
               minLength: {
                 value: 2,
-                message: "닉네임은 2자에서 20자까지 가능합니다.",
+                message: "닉네임은 2자에서 20자까지 가능해요.",
               },
               maxLength: {
                 value: 20,
-                message: "닉네임은 2자에서 20자까지 가능합니다.",
+                message: "닉네임은 2자에서 20자까지 가능해요.",
+              },
+              pattern: {
+                value: /^[a-zA-Z0-9가-힣]+$/,
+                message: "닉네임에는 한글, 영문, 숫자만 사용할 수 있어요.",
               },
             }}
           />

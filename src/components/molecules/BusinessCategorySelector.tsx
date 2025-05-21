@@ -1,10 +1,10 @@
-import { Controller } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const Label = styled.label`
@@ -18,6 +18,7 @@ const Label = styled.label`
 
 const ButtonGroup = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 `;
 
@@ -32,35 +33,30 @@ const Option = styled.button<{ selected: boolean }>`
   cursor: pointer;
 `;
 
+const categoryOptions = ["푸드트럭", "플리마켓", "놀이", "공연", "기타"];
+
 interface Props {
-  control: any;
+  control: Control<any>;
   errorMessage?: string;
 }
 
-const GenderSelector = ({ control, errorMessage }: Props) => {
-  const options = [
-    { value: "female", label: "여성" },
-    { value: "male", label: "남성" },
-    { value: "private", label: "비밀이에요" },
-  ];
-
+const BusinessCategorySelector = ({ control, errorMessage }: Props) => {
   return (
     <Wrapper>
-      <Label>성별</Label>
+      <Label>사업 카테고리</Label>
       <Controller
-        name="gender"
+        name="category"
         control={control}
-        defaultValue="female"
         render={({ field }) => (
           <ButtonGroup>
-            {options.map((opt) => (
+            {categoryOptions.map((item) => (
               <Option
-                key={opt.value}
+                key={item}
                 type="button"
-                selected={field.value === opt.value}
-                onClick={() => field.onChange(opt.value)}
+                selected={field.value === item}
+                onClick={() => field.onChange(item)}
               >
-                {opt.label}
+                {item}
               </Option>
             ))}
           </ButtonGroup>
@@ -73,4 +69,4 @@ const GenderSelector = ({ control, errorMessage }: Props) => {
   );
 };
 
-export default GenderSelector;
+export default BusinessCategorySelector;

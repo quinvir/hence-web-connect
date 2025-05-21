@@ -1,25 +1,35 @@
 import { Link, useLocation } from "react-router-dom";
+import styled from "styled-components";
+
+const StyledNavItem = styled(Link)<{ $active: boolean }>`
+  font-weight: ${({ $active }) => ($active ? 700 : 400)};
+  color: ${({ $active }) => ($active ? "#000" : "#646464")};
+  text-decoration: none;
+  font-family: "SUIT Variable";
+  font-size: 16px;
+  font-style: normal;
+  line-height: 140%;
+  letter-spacing: -0.25px;
+
+  &:hover {
+    color: #000;
+  }
+`;
 
 interface NavItemProps {
   to: string;
-  icon?: React.ReactNode;
   label: string;
 }
 
-const NavItem = ({ to, icon, label }: NavItemProps) => {
+const NavItem = ({ to, label }: NavItemProps) => {
   const location = useLocation();
-  const isActive = location.pathname === to;
+  const isActive =
+    to === "/" ? location.pathname === "/" : location.pathname.startsWith(to);
 
   return (
-    <Link
-      to={to}
-      className={`flex flex-col items-center gap-1 text-xs ${
-        isActive ? "text-purple-500" : "text-gray-400"
-      }`}
-    >
-      {icon}
-      <span>{label}</span>
-    </Link>
+    <StyledNavItem to={to} $active={isActive}>
+      {label}
+    </StyledNavItem>
   );
 };
 
