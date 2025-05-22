@@ -52,7 +52,7 @@ const SignupEmailTemplate = () => {
       ? "이미 사용중인 이메일이에요"
       : undefined;
 
-  const onSignupHandler = (data: any) => {
+  const onSubmit = (data: any) => {
     const { email, password } = data;
 
     navigate("/signup-profile", {
@@ -73,7 +73,7 @@ const SignupEmailTemplate = () => {
         </>
       }
     >
-      <Form onSubmit={handleSubmit(onSignupHandler)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <InputFieldWrapper>
           <InputField
             label="이메일"
@@ -83,10 +83,10 @@ const SignupEmailTemplate = () => {
             signup
             control={control}
             rules={{
-              required: "이메일을 입력해주세요",
+              required: "이메일을 입력해 주세요",
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "유효한 이메일 주소를 입력해주세요",
+                message: "유효한 이메일 주소를 입력해 주세요",
               },
             }}
             onBlur={() => setIsEmailChecked(true)}
@@ -100,12 +100,12 @@ const SignupEmailTemplate = () => {
             control={control}
             signup
             rules={{
-              required: "비밀번호를 입력해주세요",
+              required: "비밀번호를 입력해 주세요",
               pattern: {
                 value:
                   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=])[A-Za-z\d!@#$%^&*()_\-+=]{8,20}$/,
                 message:
-                  "8~20자, 대문자, 소문자, 숫자, 특수문자를 포함해주세요.",
+                  "8~20자, 대문자, 소문자, 숫자, 특수문자를 포함해 주세요.",
               },
             }}
             errorMessage={

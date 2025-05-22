@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-import { signup, SignupPayload } from "../api/auth/auth.api";
+import { login, LoginPayload } from "../api/auth/auth.api";
 import { saveTokens } from "../utils/toeknUtils";
 
-export const useSignup = () => {
+export const useLogin = () => {
   return useMutation({
-    mutationFn: (payload: SignupPayload) => signup(payload),
+    mutationFn: (payload: LoginPayload) => login(payload),
     onSuccess: (response) => {
       const { code, data, message } = response.data;
 

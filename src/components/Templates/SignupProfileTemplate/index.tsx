@@ -47,7 +47,7 @@ const SignupProfileTemplate = () => {
   const { setNickname, setProfileImage } = useUserStore();
 
   const { mutateAsync: uploadImage } = useUploadProfileImage();
-  const { mutateAsync: signupUser } = useSignup();
+  const signupUser = useSignup();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -91,38 +91,27 @@ const SignupProfileTemplate = () => {
       return;
     }
 
-    try {
-      const payload = {
-        email,
-        password,
-        nickname: data.nickname,
-        gender: data.gender,
-        marketingAgree: data.marketingAgree === "yes",
-        profileImageUrl: uploadedImageUrl,
-      };
+    const payload = {
+      email,
+      password,
+      nickname: data.nickname,
+      gender: data.gender,
+      marketingAgree: data.marketingAgree === "yes",
+      profileImageUrl: uploadedImageUrl,
+    };
 
-      const res = await signupUser(payload);
-      const { code } = res.data;
-
-      if (code !== 200) {
-        const msg = errorCodeMap[code.toString()] ?? [
-          "회원가입에 실패했습니다.",
-          "다시 시도해주세요.",
-        ];
+    signupUser.mutate(payload, {
+      onSuccess: () => {
+        setNickname(data.nickname);
+        setProfileImage(uploadedImageUrl);
+        navigate("/welcome");
+      },
+      onError: (err: any) => {
+        const msg = errorCodeMap[String(err.code)] ??
+          err.message ?? ["회원가입에 실패했습니다.", "다시 시도해 주세요."];
         showAlert("Error", msg);
-        return;
-      }
-
-      setNickname(data.nickname);
-      setProfileImage(uploadedImageUrl);
-      navigate("/welcome");
-    } catch (signupError) {
-      console.error("회원가입 실패", signupError);
-      showAlert("Error", [
-        "회원가입에 실패했습니다.",
-        "잠시 후 다시 시도해 주세요.",
-      ]);
-    }
+      },
+    });
   };
 
   return (
