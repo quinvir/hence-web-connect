@@ -11,14 +11,20 @@ import {
   UnderlinedTextButton,
 } from "./styles";
 import PasswordField from "../../molecules/PasswordField";
+import { useLogin } from "../../../hooks/useLogin";
+import { useState } from "react";
+import AlertModal from "../../molecules/AlertModal";
+import { errorCodeMap } from "../../../constants/errorCode";
 
 const EmailLoginForm = () => {
   const navigate = useNavigate();
+  const loginUser = useLogin();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm({
     mode: "onBlur",
   });
@@ -27,8 +33,49 @@ const EmailLoginForm = () => {
     navigate("/signup");
   };
 
-  const onValid = (data: any) => {
-    // console.log("로그인 요청 데이터:", data);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("알림");
+  const [alertMessage, setAlertMessage] = useState<string | string[]>([]);
+
+  const showAlert = (title: string, message: string | string[]) => {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertOpen(true);
+  };
+
+  const handleAlertConfirm = () => {
+    setAlertOpen(false);
+  };
+
+  const onSubmit = (data: any) => {
+    loginUser.mutate(data, {
+      onSuccess: () => {
+        showAlert("Success", "로그인 성공!");
+      },
+      onError: (err: any) => {
+        const code = String(err.code);
+
+        const msg =
+          errorCodeMap[code] ??
+          "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+
+        if (code === "3002") {
+          setError("email", {
+            type: "manual",
+            message: "이메일 또는 비밀번호가 일치하지 않습니다.",
+          });
+          setError("password", {
+            type: "manual",
+            message: "이메일 또는 비밀번호가 일치하지 않습니다.",
+          });
+        } else {
+          setError("email", {
+            type: "manual",
+            message: typeof msg === "string" ? msg : msg[0],
+          });
+        }
+      },
+    });
   };
 
   const onForgotPasswordHandler = () => {
@@ -36,7 +83,7 @@ const EmailLoginForm = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onValid)}>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <TopSection>
         <InputField
           label="이메일"
@@ -68,6 +115,9 @@ const EmailLoginForm = () => {
               ? errors.password.message
               : undefined
           }
+          rules={{
+            required: "비밀번호를 입력해주세요",
+          }}
         />
         <SubRow>
           <TextButton>
@@ -95,6 +145,15 @@ const EmailLoginForm = () => {
           회원가입
         </Button>
       </FooterText>
+      {alertOpen && (
+        <AlertModal
+          type="confirmOnly"
+          title="알림"
+          message={alertMessage}
+          onConfirm={handleAlertConfirm}
+          onCancel={handleAlertConfirm}
+        />
+      )}
     </Form>
   );
 };

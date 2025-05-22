@@ -101,28 +101,15 @@ const SignupProfileTemplate = () => {
     };
 
     signupUser.mutate(payload, {
-      onSuccess: (res) => {
-        const { code } = res.data;
-
-        if (code !== 200) {
-          const msg = errorCodeMap[code.toString()] ?? [
-            "회원가입에 실패했습니다.",
-            "다시 시도해주세요.",
-          ];
-          showAlert("Error", msg);
-          return;
-        }
-
+      onSuccess: () => {
         setNickname(data.nickname);
         setProfileImage(uploadedImageUrl);
         navigate("/welcome");
       },
-      onError: (signupError) => {
-        console.error("회원가입 실패", signupError);
-        showAlert("Error", [
-          "회원가입에 실패했습니다.",
-          "잠시 후 다시 시도해 주세요.",
-        ]);
+      onError: (err: any) => {
+        const msg = errorCodeMap[String(err.code)] ??
+          err.message ?? ["회원가입에 실패했습니다.", "다시 시도해 주세요."];
+        showAlert("Error", msg);
       },
     });
   };

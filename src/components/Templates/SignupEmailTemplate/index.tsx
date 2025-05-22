@@ -52,7 +52,7 @@ const SignupEmailTemplate = () => {
       ? "이미 사용중인 이메일이에요"
       : undefined;
 
-  const onSignupHandler = (data: any) => {
+  const onSubmit = (data: any) => {
     const { email, password } = data;
 
     navigate("/signup-profile", {
@@ -73,7 +73,7 @@ const SignupEmailTemplate = () => {
         </>
       }
     >
-      <Form onSubmit={handleSubmit(onSignupHandler)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <InputFieldWrapper>
           <InputField
             label="이메일"
