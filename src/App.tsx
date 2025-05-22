@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import UserProfileEditPage from "./pages/UserProfileEditPage";
 import SignupProfile from "./pages/SignupProfile";
 import BusinessProfileEditPage from "./pages/BusinessProfileEditPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           path="/profile/business/edit"
           element={<BusinessProfileEditPage />}
         />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* 공통 레이아웃 */}
         <Route element={<DefaultLayout />}>

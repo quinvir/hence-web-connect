@@ -43,7 +43,7 @@ export const Title = styled.h2`
   letter-spacing: -0.25px;
 `;
 
-export const Message = styled.p`
+export const Message = styled.div`
   color: #000;
   font-family: "SUIT Variable";
   font-size: 16px;

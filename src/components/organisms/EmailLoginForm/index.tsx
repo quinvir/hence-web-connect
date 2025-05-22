@@ -2,7 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Button from "../../atoms/Button";
 import InputField from "../../molecules/InputField";
-import { FooterText, Form, SubRow, TextButton, TopSection } from "./styles";
+import {
+  FooterText,
+  Form,
+  SubRow,
+  TextButton,
+  TopSection,
+  UnderlinedTextButton,
+} from "./styles";
 import PasswordField from "../../molecules/PasswordField";
 
 const EmailLoginForm = () => {
@@ -22,6 +29,10 @@ const EmailLoginForm = () => {
 
   const onValid = (data: any) => {
     // console.log("로그인 요청 데이터:", data);
+  };
+
+  const onForgotPasswordHandler = () => {
+    navigate("/forgot-password");
   };
 
   return (
@@ -59,7 +70,15 @@ const EmailLoginForm = () => {
           }
         />
         <SubRow>
-          <TextButton>비밀번호를 잊어버리셨나요?</TextButton>
+          <TextButton>
+            <UnderlinedTextButton
+              onClick={onForgotPasswordHandler}
+              width="auto"
+              height="auto"
+            >
+              비밀번호를 잊어버리셨나요?
+            </UnderlinedTextButton>
+          </TextButton>
         </SubRow>
       </TopSection>
       <Button $backgroudnColor="#2B77F5" $textColor="#FFF">
