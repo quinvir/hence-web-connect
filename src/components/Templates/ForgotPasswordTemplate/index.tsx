@@ -12,19 +12,16 @@ import AlertModal from "../../molecules/AlertModal";
 import InputField from "../../molecules/InputField";
 import { useForm } from "react-hook-form";
 import Button from "../../atoms/Button";
+import { useCheckEmail } from "../../../hooks/useCheckEmail";
+import { usePasswordReset } from "../../../hooks/usePasswordReset";
 
 const ForgotPasswordTemplate = () => {
-  const [email, setEmail] = useState("");
-
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [alertType, setAlertType] = useState<"fileSize" | "saveConfirm" | null>(
-    null
-  );
-
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors, isValid },
+    watch,
   } = useForm({
     mode: "onChange",
     defaultValues: {
@@ -32,17 +29,46 @@ const ForgotPasswordTemplate = () => {
     },
   });
 
+  const [email, setEmail] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertType, setAlertType] = useState<"fileSize" | "saveConfirm" | null>(
+    null
+  );
+
+  const watchEmail = watch("email");
   const navigate = useNavigate();
+
+  // 호출부에서 객체가 아니라 boolean만 넘기기
+  const { refetch: refetchEmailCheck } = useCheckEmail(watchEmail, false);
+
+  const passwordResetMutation = usePasswordReset({
+    onSuccess: () => {
+      setEmail(watchEmail);
+      setAlertOpen(true);
+    },
+    onError: (error) => {
+      setError("email", {
+        type: "manual",
+        message: error.message || "비밀번호 재설정 요청에 실패했습니다.",
+      });
+    },
+  });
 
   const handleAlertConfirm = () => {
     setAlertOpen(false);
   };
 
-  const onSubmit = (data: any) => {
-    setEmail(data.email);
+  const onSubmit = async (data: any) => {
+    const { data: checkResult } = await refetchEmailCheck();
+    if (!checkResult?.exists) {
+      setError("email", {
+        type: "manual",
+        message: "존재하지 않는 이메일입니다.",
+      });
+      return;
+    }
 
-    setAlertType("saveConfirm");
-    setAlertOpen(true);
+    passwordResetMutation.mutate(data.email);
   };
 
   return (
