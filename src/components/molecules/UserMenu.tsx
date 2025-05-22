@@ -2,7 +2,7 @@ import { useUserStore } from "../../stores/userStore";
 import Avatar from "../atoms/Avatar";
 
 const UserMenu = () => {
-  const profileImage = useUserStore((state) => state.profileImage);
+  const profileImage = useUserStore((state) => state.user?.profileImageUrl);
 
   return (
     <div className="relative">

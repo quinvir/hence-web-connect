@@ -44,7 +44,7 @@ const SignupProfileTemplate = () => {
     setAlertOpen(false);
   };
 
-  const { setNickname, setProfileImage } = useUserStore();
+  const { updateUser } = useUserStore();
 
   const { mutateAsync: uploadImage } = useUploadProfileImage();
   const signupUser = useSignup();
@@ -102,8 +102,10 @@ const SignupProfileTemplate = () => {
 
     signupUser.mutate(payload, {
       onSuccess: () => {
-        setNickname(data.nickname);
-        setProfileImage(uploadedImageUrl);
+        updateUser({
+          name: data.nickname,
+          profileImageUrl: uploadedImageUrl,
+        });
         navigate("/welcome");
       },
       onError: (err: any) => {

@@ -4,7 +4,7 @@ import { ButtonBox, FormCardWrapper, Header, ImageBox } from "./styles";
 import { useUserStore } from "../../../stores/userStore";
 
 const WelcomeTemplate = () => {
-  const nickname = useUserStore((state) => state.nickname);
+  const nickname = useUserStore((state) => state.user?.name ?? "");
 
   const navigate = useNavigate();
 

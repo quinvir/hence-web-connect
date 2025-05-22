@@ -33,3 +33,9 @@ export const login = (data: LoginPayload) => {
 export const requestPasswordReset = (email: string) => {
   return client.post("/api/v1/user/password-reset", { email });
 };
+
+// 프로필 수정
+export const patchUserProfile = async (data: any) => {
+  const response = await client.patch("/api/v1/user/me", data);
+  return response.data.data;
+};

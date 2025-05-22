@@ -4,17 +4,20 @@ import InputField from "../../molecules/InputField";
 import GenderSelector from "../../molecules/GenderSelector";
 import MarketingAgreement from "../../molecules/MarketingAgreement";
 import ProfileImageUploader from "../../molecules/ProfileImageUploader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ButtonBox, Container, Form, TempBox } from "./styles";
 import TextareaField from "../../molecules/TextareaField";
 import AlertModal from "../../molecules/AlertModal";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../../stores/userStore";
+import { useUpdateProfile } from "../../../hooks/useUpdateProfile";
 
 const UserProfileEditTemplate = () => {
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    reset,
   } = useForm({
     mode: "onChange",
     defaultValues: {
@@ -33,6 +36,26 @@ const UserProfileEditTemplate = () => {
   const [alertType, setAlertType] = useState<"fileSize" | "saveConfirm" | null>(
     null
   );
+
+  const { user } = useUserStore();
+  const updateProfile = useUpdateProfile();
+
+  console.log("Zustand에서 불러온 유저 정보:", user);
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        nickname: user.name ?? "",
+        gender: user.gender ?? "FEMALE",
+        bio: user.introduction ?? "",
+        instagram: user.instagram ?? "",
+        kakaotalk: user.kakao ?? "",
+        marketingAgree: user.marketingConsent ? "yes" : "no",
+      });
+
+      setImage(user.profileImageUrl ?? null);
+    }
+  }, [user, reset]);
 
   const navigate = useNavigate();
 
