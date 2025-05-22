@@ -50,6 +50,7 @@ interface Props {
   control: Control<any>;
   rules?: RegisterOptions;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  onBlur?: () => void;
 }
 
 const InputField = ({
@@ -62,6 +63,7 @@ const InputField = ({
   errorMessage,
   control,
   rules,
+  onBlur,
 }: Props) => {
   const hasError = !!errorMessage;
   const [isFocused, setIsFocused] = useState(false);
@@ -76,7 +78,9 @@ const InputField = ({
         control={control}
         defaultValue=""
         rules={rules}
-        render={({ field: { value, onChange, onBlur, ...rest } }) => (
+        render={({
+          field: { value, onChange, onBlur: fieldOnBlur, ...rest },
+        }) => (
           <Input
             {...rest}
             type={type}
@@ -195,7 +199,8 @@ const InputField = ({
             onFocus={() => setIsFocused(true)}
             onBlur={(e) => {
               setIsFocused(false);
-              onBlur();
+              fieldOnBlur();
+              onBlur?.();
             }}
           />
         )}

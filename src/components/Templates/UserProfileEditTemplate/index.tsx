@@ -19,7 +19,7 @@ const UserProfileEditTemplate = () => {
     mode: "onChange",
     defaultValues: {
       nickname: "",
-      gender: "female",
+      gender: "FEMALE",
       bio: "",
       instagram: "",
       kakaotalk: "",

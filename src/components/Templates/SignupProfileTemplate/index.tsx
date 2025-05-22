@@ -4,13 +4,15 @@ import InputField from "../../molecules/InputField";
 import Button from "../../atoms/Button";
 import ProfileImageUploader from "../../molecules/ProfileImageUploader";
 import { Form, InputFieldWrapper } from "./styles";
-import DashedBorderBox from "../../atoms/DashedBorderBox";
 import { useState } from "react";
 import GenderSelector from "../../molecules/GenderSelector";
 import MarketingAgreement from "../../molecules/MarketingAgreement";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../stores/userStore";
 import AlertModal from "../../molecules/AlertModal";
+import { useUploadProfileImage } from "../../../hooks/useUploadProfileImage";
+import { useSignup } from "../../../hooks/useSignup";
+import { errorCodeMap } from "../../../constants/errorCode";
 
 const SignupProfileTemplate = () => {
   const {
@@ -21,29 +23,106 @@ const SignupProfileTemplate = () => {
     mode: "onBlur",
     defaultValues: {
       nickname: "",
-      gender: "female",
+      gender: "FEMALE",
       marketingAgree: "yes",
     },
   });
 
   const [image, setImage] = useState<string | null>(null);
+
   const [alertOpen, setAlertOpen] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("알림");
+  const [alertMessage, setAlertMessage] = useState<string | string[]>([]);
 
-  const navigate = useNavigate();
-
-  const { setNickname, setProfileImage } = useUserStore();
+  const showAlert = (title: string, message: string | string[]) => {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertOpen(true);
+  };
 
   const handleAlertConfirm = () => {
     setAlertOpen(false);
   };
 
-  const onSubmit = (data: any) => {
-    // console.log("회원가입 데이터:", data);
+  const { setNickname, setProfileImage } = useUserStore();
 
-    setNickname(data.nickname);
-    setProfileImage(image);
+  const { mutateAsync: uploadImage } = useUploadProfileImage();
+  const { mutateAsync: signupUser } = useSignup();
 
-    navigate("/welcome");
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { email, password } = location.state || {};
+
+  // 새로고침시 state 사라짐 -> 이전 화면으로 이동
+  if (!email || !password) {
+    navigate("/signup", { replace: true });
+    return null;
+  }
+
+  const onSubmit = async (data: any) => {
+    let uploadedImageUrl = "";
+
+    try {
+      if (image) {
+        const blob = await (await fetch(image)).blob();
+        const formData = new FormData();
+        formData.append("file", blob, "profile.png");
+
+        const res = await uploadImage(formData);
+        const { code, data } = res.data;
+
+        if (code !== 200) {
+          const msg =
+            errorCodeMap[code.toString()] ??
+            "이미지 업로드 중 오류가 발생했습니다.";
+          showAlert("Error", msg);
+          return;
+        }
+
+        uploadedImageUrl = data.url;
+      }
+    } catch (uploadError) {
+      console.error("이미지 업로드 실패", uploadError);
+      showAlert("Error", [
+        "프로필 이미지 업로드에 실패했습니다.",
+        "잠시 후 다시 시도해 주세요.",
+      ]);
+      return;
+    }
+
+    try {
+      const payload = {
+        email,
+        password,
+        nickname: data.nickname,
+        gender: data.gender,
+        marketingAgree: data.marketingAgree === "yes",
+        profileImageUrl: uploadedImageUrl,
+      };
+
+      const res = await signupUser(payload);
+      const { code } = res.data;
+
+      if (code !== 200) {
+        const msg = errorCodeMap[code.toString()] ?? [
+          "회원가입에 실패했습니다.",
+          "다시 시도해주세요.",
+        ];
+        showAlert("Error", msg);
+        return;
+      }
+
+      setNickname(data.nickname);
+      setProfileImage(uploadedImageUrl);
+      navigate("/welcome");
+    } catch (signupError) {
+      console.error("회원가입 실패", signupError);
+      showAlert("Error", [
+        "회원가입에 실패했습니다.",
+        "잠시 후 다시 시도해 주세요.",
+      ]);
+    }
   };
 
   return (
@@ -56,13 +135,19 @@ const SignupProfileTemplate = () => {
           <ProfileImageUploader
             image={image}
             setImage={setImage}
-            onFileTooLarge={() => setAlertOpen(true)}
+            onFileTooLarge={() =>
+              showAlert(
+                "파일 용량 초과",
+                "2MB 이하의 이미지만 업로드할 수 있어요."
+              )
+            }
+            onError={(msg) => showAlert("Error", msg)}
           />
           {alertOpen && (
             <AlertModal
               type="confirmOnly"
-              title="파일 용량 초과"
-              message="2MB 이하의 이미지만 업로드할 수 있어요."
+              title={alertTitle}
+              message={alertMessage}
               onConfirm={handleAlertConfirm}
               onCancel={handleAlertConfirm}
             />

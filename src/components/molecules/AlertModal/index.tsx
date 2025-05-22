@@ -9,6 +9,7 @@ import {
   TextBox,
 } from "./styles";
 import { AlertModalProps } from "./types";
+import React from "react";
 
 const AlertModal = ({
   title = "알림",
@@ -32,7 +33,23 @@ const AlertModal = ({
       <ModalContainer>
         <TextBox>
           <Title>{title}</Title>
-          <Message>{message}</Message>
+          <Message>
+            {Array.isArray(message)
+              ? message.map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))
+              : typeof message === "string"
+              ? message.split("\n").map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))
+              : message}
+          </Message>
         </TextBox>
         <ButtonGroup $type={type}>
           {type !== "confirmOnly" && (
