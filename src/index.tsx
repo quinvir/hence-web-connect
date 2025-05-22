@@ -1,18 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import GlobalStyle from './styles/GlobalStyles';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import GlobalStyle from "./styles/GlobalStyles";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./query/queryClient";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
+
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <QueryClientProvider client={queryClient}>
     <GlobalStyle />
     <App />
-  </React.StrictMode>
+  </QueryClientProvider>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

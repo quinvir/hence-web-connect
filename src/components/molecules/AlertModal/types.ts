@@ -1,6 +1,6 @@
 export interface AlertModalProps {
   title?: string;
-  message: string | React.ReactNode;
+  message: string | string[] | React.ReactNode;
   type: "confirmOnly" | "cancelConfirm" | "warning";
   confirmText?: string;
   cancelText?: string;

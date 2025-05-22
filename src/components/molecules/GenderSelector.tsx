@@ -39,9 +39,9 @@ interface Props {
 
 const GenderSelector = ({ control, errorMessage }: Props) => {
   const options = [
-    { value: "female", label: "여성" },
-    { value: "male", label: "남성" },
-    { value: "private", label: "비밀이에요" },
+    { value: "FEMALE", label: "여성" },
+    { value: "MALE", label: "남성" },
+    { value: "SECRET", label: "비밀이에요" },
   ];
 
   return (
@@ -50,7 +50,7 @@ const GenderSelector = ({ control, errorMessage }: Props) => {
       <Controller
         name="gender"
         control={control}
-        defaultValue="female"
+        defaultValue="FEMALE"
         render={({ field }) => (
           <ButtonGroup>
             {options.map((opt) => (

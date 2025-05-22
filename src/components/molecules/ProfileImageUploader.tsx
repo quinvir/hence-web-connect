@@ -124,6 +124,7 @@ interface Props {
   setImage: (url: string | null) => void;
   variant?: "default" | "user";
   onFileTooLarge?: () => void;
+  onError?: (message: string) => void;
 }
 
 const ProfileImageUploader = ({
@@ -131,6 +132,7 @@ const ProfileImageUploader = ({
   setImage,
   variant = "default",
   onFileTooLarge,
+  onError,
 }: Props) => {
   const MAX_FILE_SIZE_MB = 2;
   const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -151,6 +153,7 @@ const ProfileImageUploader = ({
       setImage(base64);
     } catch (error) {
       console.error("파일 변환 실패", error);
+      onError?.("이미지를 처리할 수 없습니다.");
     }
   };
 
@@ -181,7 +184,11 @@ const ProfileImageUploader = ({
         </PreviewWrapper>
       ) : (
         <UploadBox>
-          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input
+            type="file"
+            accept=".jpg,.jpeg,.png,.webp"
+            onChange={handleFileChange}
+          />
           <ImageBox $isUserProfile={variant === "user"}>
             <img
               src={

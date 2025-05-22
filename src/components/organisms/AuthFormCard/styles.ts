@@ -13,7 +13,6 @@ export const FormCardWrapper = styled.div`
   padding: 64px 0;
   background-color: #fff;
   border-radius: 20px;
-  border: 1px solid red;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 `;
 

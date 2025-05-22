@@ -11,6 +11,8 @@ import {
   NoticeBox,
 } from "./styles";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useCheckEmail } from "../../../hooks/useCheckEmail";
 
 const SignupEmailTemplate = () => {
   const {
@@ -37,10 +39,28 @@ const SignupEmailTemplate = () => {
 
   const navigate = useNavigate();
 
-  const onSignupHandler = (data: any) => {
-    // console.log("회원가입 데이터", data);
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
 
-    navigate("/signup-profile");
+  const { data: emailCheckData } = useCheckEmail(email, isEmailChecked);
+
+  const isDuplicateEmail = emailCheckData?.exists === true;
+
+  const emailErrorMessage =
+    typeof errors.email?.message === "string"
+      ? errors.email.message
+      : isDuplicateEmail
+      ? "이미 사용중인 이메일이에요"
+      : undefined;
+
+  const onSignupHandler = (data: any) => {
+    const { email, password } = data;
+
+    navigate("/signup-profile", {
+      state: {
+        email,
+        password,
+      },
+    });
   };
 
   return (
@@ -69,12 +89,10 @@ const SignupEmailTemplate = () => {
                 message: "유효한 이메일 주소를 입력해주세요",
               },
             }}
-            errorMessage={
-              typeof errors.email?.message === "string"
-                ? errors.email.message
-                : undefined
-            }
+            onBlur={() => setIsEmailChecked(true)}
+            errorMessage={emailErrorMessage}
           />
+
           <PasswordField
             label="비밀번호"
             placeholder="비밀번호를 입력하세요"
