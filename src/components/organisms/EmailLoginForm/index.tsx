@@ -93,7 +93,7 @@ const EmailLoginForm = () => {
           gap="8px"
           control={control}
           rules={{
-            required: "이메일을 입력해주세요",
+            required: "이메일을 입력해 주세요",
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
               message: "올바른 이메일 형식이 아닙니다",
@@ -116,7 +116,7 @@ const EmailLoginForm = () => {
               : undefined
           }
           rules={{
-            required: "비밀번호를 입력해주세요",
+            required: "비밀번호를 입력해 주세요",
           }}
         />
         <SubRow>

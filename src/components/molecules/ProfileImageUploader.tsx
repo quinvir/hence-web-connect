@@ -201,7 +201,7 @@ const ProfileImageUploader = ({
             />
           </ImageBox>
           <Instruction>
-            <p>사진을 업로드 해주세요.</p>
+            <p>사진을 업로드해 주세요.</p>
             <p>
               <span>2MB</span> 이하의 파일만 업로드 할 수 있어요.
             </p>
