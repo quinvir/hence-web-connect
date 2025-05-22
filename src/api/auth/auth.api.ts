@@ -28,3 +28,8 @@ export const checkEmailDuplication = (email: string) => {
 export const login = (data: LoginPayload) => {
   return client.post("/api/v1/user/login", data);
 };
+
+// 비밀번호 재설정 링크 요청
+export const requestPasswordReset = (email: string) => {
+  return client.post("/api/v1/user/password-reset", { email });
+};
