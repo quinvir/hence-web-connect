@@ -4,7 +4,7 @@ import InputField from "../../molecules/InputField";
 import Button from "../../atoms/Button";
 import ProfileImageUploader from "../../molecules/ProfileImageUploader";
 import { Form, InputFieldWrapper } from "./styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GenderSelector from "../../molecules/GenderSelector";
 import MarketingAgreement from "../../molecules/MarketingAgreement";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,9 +18,9 @@ const SignupProfileTemplate = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, touchedFields },
   } = useForm({
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       nickname: "",
       gender: "FEMALE",
@@ -162,7 +162,9 @@ const SignupProfileTemplate = () => {
             type="text"
             placeholder="사용하실 닉네임을 입력하세요"
             control={control}
-            errorMessage={errors.nickname?.message as string}
+            errorMessage={
+              touchedFields.nickname ? (errors.nickname?.message as string) : ""
+            }
             signup
             gap="8px"
             rules={{

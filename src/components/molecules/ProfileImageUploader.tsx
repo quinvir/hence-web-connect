@@ -184,7 +184,11 @@ const ProfileImageUploader = ({
         </PreviewWrapper>
       ) : (
         <UploadBox>
-          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input
+            type="file"
+            accept=".jpg,.jpeg,.png,.webp"
+            onChange={handleFileChange}
+          />
           <ImageBox $isUserProfile={variant === "user"}>
             <img
               src={
