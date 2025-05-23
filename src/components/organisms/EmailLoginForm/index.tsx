@@ -15,6 +15,7 @@ import { useLogin } from "../../../hooks/useLogin";
 import { useState } from "react";
 import AlertModal from "../../molecules/AlertModal";
 import { errorCodeMap } from "../../../constants/errorCode";
+import { useUserStore } from "../../../stores/userStore";
 
 const EmailLoginForm = () => {
   const navigate = useNavigate();
@@ -47,9 +48,12 @@ const EmailLoginForm = () => {
     setAlertOpen(false);
   };
 
+  const { setUser } = useUserStore();
+
   const onSubmit = (data: any) => {
     loginUser.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (response) => {
+        setUser(response.data.data.user);
         showAlert("Success", "로그인 성공!");
       },
       onError: (err: any) => {
@@ -125,6 +129,7 @@ const EmailLoginForm = () => {
               onClick={onForgotPasswordHandler}
               width="auto"
               height="auto"
+              type="button"
             >
               비밀번호를 잊어버리셨나요?
             </UnderlinedTextButton>
