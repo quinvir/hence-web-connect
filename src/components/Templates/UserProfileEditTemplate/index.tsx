@@ -13,6 +13,7 @@ import { useUserStore } from "../../../stores/userStore";
 import { useUpdateProfile } from "../../../hooks/useUpdateProfile";
 import { errorCodeMap } from "../../../constants/errorCode";
 import { useUploadProfileImage } from "../../../hooks/useUploadProfileImage";
+import { useUserProfile } from "../../../hooks/useUserProfile";
 
 const UserProfileEditTemplate = () => {
   const {
@@ -38,10 +39,12 @@ const UserProfileEditTemplate = () => {
   const [alertTitle, setAlertTitle] = useState("알림");
   const [alertMessage, setAlertMessage] = useState<string | string[]>([]);
 
-  const { user } = useUserStore();
+  const { user, updateUser } = useUserStore();
+  const { data, isLoading } = useUserProfile();
 
   // console.log("User 정보 get:", user);
 
+  // 최초 Zustand user로 reset
   useEffect(() => {
     if (user) {
       reset({
@@ -52,11 +55,26 @@ const UserProfileEditTemplate = () => {
         kakaotalk: user.kakao ?? "",
         marketingAgree: user.marketingConsent ? "yes" : "no",
       });
-
       setImage(user.profileImageUrl ?? null);
     }
-  }, [user, reset]);
+  }, []);
 
+  // 최신 user 동기화용 GET API
+  useEffect(() => {
+    if (data?.code === 200 && data.data) {
+      const fetched = data.data;
+      updateUser(fetched);
+      reset({
+        nickname: fetched.name ?? "",
+        gender: fetched.gender ?? "FEMALE",
+        bio: fetched.introduction ?? "",
+        instagram: fetched.instagram ?? "",
+        kakaotalk: fetched.kakao ?? "",
+        marketingAgree: fetched.marketingConsent ? "yes" : "no",
+      });
+      setImage(fetched.profileImageUrl ?? null);
+    }
+  }, [data]);
   const navigate = useNavigate();
 
   const handleAlertConfirm = () => {
