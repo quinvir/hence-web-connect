@@ -54,7 +54,8 @@ const EmailLoginForm = () => {
     loginUser.mutate(data, {
       onSuccess: (response) => {
         setUser(response.data.data.user);
-        showAlert("Success", "로그인 성공!");
+        // showAlert("Success", "로그인 성공!");
+        navigate("/profile-edit");
       },
       onError: (err: any) => {
         const code = String(err.code);
