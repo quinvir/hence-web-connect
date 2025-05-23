@@ -24,10 +24,10 @@ export const BackgroundImage = styled.img`
   width: 100%;
   height: 100%;
   min-height: 100vh;
-  object-fit: cover;
-  z-index: 0;
-  transition: opacity 0.2s ease;
-  opacity: 1;
+  background-image: url("/assets/images/login/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 `;
 
 export const TextContainer = styled.div`
