@@ -4,7 +4,7 @@ export interface SignupPayload {
   email: string;
   password: string;
   profileImageUrl?: string | null;
-  nickname: string;
+  name: string;
   gender: "MALE" | "FEMALE" | "SECRET";
   marketingAgree?: boolean;
 }

@@ -94,7 +94,7 @@ const SignupProfileTemplate = () => {
     const payload = {
       email,
       password,
-      nickname: data.nickname,
+      name: data.nickname,
       gender: data.gender,
       marketingAgree: data.marketingAgree === "yes",
       profileImageUrl: uploadedImageUrl,
