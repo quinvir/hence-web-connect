@@ -18,16 +18,18 @@ export const Wrapper = styled.section`
   overflow: hidden;
 `;
 
-export const BackgroundImage = styled.img`
+export const BackgroundImage = styled.div<{ $loaded: boolean }>`
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  min-height: 100vh;
   background-image: url("/assets/images/login/background.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  z-index: 0;
+  opacity: ${({ $loaded }) => ($loaded ? 1 : 0)};
+  transition: opacity 0.4s ease-in;
 `;
 
 export const TextContainer = styled.div`
