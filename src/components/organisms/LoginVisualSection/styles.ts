@@ -9,7 +9,6 @@ export const Wrapper = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   color: #fff;
   text-align: center;
   text-shadow: 0px 4px 20px rgba(0, 0, 0, 0.6);
@@ -24,6 +23,7 @@ export const BackgroundImage = styled.img`
   inset: 0;
   width: 100%;
   height: 100%;
+  min-height: 100vh;
   object-fit: cover;
   z-index: 0;
   transition: opacity 0.2s ease;

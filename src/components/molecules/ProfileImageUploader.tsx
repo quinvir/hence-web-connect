@@ -197,7 +197,9 @@ const ProfileImageUploader = ({
                   : "/assets/images/img/upload-image.png"
               }
               alt="placeholder"
-              style={{ width: "32px", height: "32px" }}
+              width={32}
+              height={32}
+              loading="eager"
             />
           </ImageBox>
           <Instruction>
