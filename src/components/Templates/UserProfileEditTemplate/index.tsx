@@ -11,6 +11,8 @@ import AlertModal from "../../molecules/AlertModal";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../stores/userStore";
 import { useUpdateProfile } from "../../../hooks/useUpdateProfile";
+import { errorCodeMap } from "../../../constants/errorCode";
+import { useUploadProfileImage } from "../../../hooks/useUploadProfileImage";
 
 const UserProfileEditTemplate = () => {
   const {
@@ -33,14 +35,12 @@ const UserProfileEditTemplate = () => {
   const [image, setImage] = useState<string | null>(null);
 
   const [alertOpen, setAlertOpen] = useState(false);
-  const [alertType, setAlertType] = useState<"fileSize" | "saveConfirm" | null>(
-    null
-  );
+  const [alertTitle, setAlertTitle] = useState("알림");
+  const [alertMessage, setAlertMessage] = useState<string | string[]>([]);
 
   const { user } = useUserStore();
-  const updateProfile = useUpdateProfile();
 
-  console.log("Zustand에서 불러온 유저 정보:", user);
+  // console.log("User 정보 get:", user);
 
   useEffect(() => {
     if (user) {
@@ -63,11 +63,67 @@ const UserProfileEditTemplate = () => {
     setAlertOpen(false);
   };
 
-  const onSubmit = (data: any) => {
-    // console.log("프로필 수정 데이터:", data);
+  const { mutate: updateProfile } = useUpdateProfile();
+  const { mutateAsync: uploadImage } = useUploadProfileImage();
 
-    setAlertType("saveConfirm");
+  const showAlert = (title: string, message: string | string[]) => {
+    setAlertTitle(title);
+    setAlertMessage(message);
     setAlertOpen(true);
+  };
+
+  const onSubmit = async (data: any) => {
+    let uploadedImageUrl = image ?? "";
+
+    try {
+      // 새 이미지 업로드가 필요한 경우 (base64)
+      if (image && image.startsWith("data:")) {
+        const blob = await (await fetch(image)).blob();
+        const formData = new FormData();
+        formData.append("file", blob, "profile.png");
+
+        const res = await uploadImage(formData);
+        const { code, data } = res.data;
+
+        if (code !== 200) {
+          const msg =
+            errorCodeMap[code.toString()] ??
+            "이미지 업로드 중 오류가 발생했습니다.";
+          showAlert("Error", msg);
+          return;
+        }
+
+        uploadedImageUrl = data.url;
+      }
+    } catch (err) {
+      console.error("이미지 업로드 실패", err);
+      showAlert("Error", [
+        "프로필 이미지 업로드에 실패했습니다.",
+        "잠시 후 다시 시도해 주세요.",
+      ]);
+      return;
+    }
+
+    const payload = {
+      name: data.nickname,
+      gender: data.gender,
+      introduction: data.bio ?? "",
+      instagram: data.instagram ?? "",
+      kakao: data.kakaotalk ?? "",
+      marketingConsent: data.marketingAgree === "yes",
+      profileImageUrl: uploadedImageUrl,
+    };
+
+    updateProfile(payload, {
+      onSuccess: () => {
+        showAlert("저장 완료", "프로필이 저장되었어요.");
+      },
+      onError: (err: any) => {
+        const msg = errorCodeMap[String(err.code)] ??
+          err.message ?? ["프로필 수정에 실패했습니다.", "다시 시도해 주세요."];
+        showAlert("Error", msg);
+      },
+    });
   };
 
   return (
@@ -91,19 +147,17 @@ const UserProfileEditTemplate = () => {
           setImage={setImage}
           variant="user"
           onFileTooLarge={() => {
-            setAlertType("fileSize");
-            setAlertOpen(true);
+            showAlert(
+              "파일 용량 초과",
+              "2MB 이하의 이미지만 업로드할 수 있어요."
+            );
           }}
         />
         {alertOpen && (
           <AlertModal
             type="confirmOnly"
-            title={alertType === "fileSize" ? "파일 용량 초과" : "저장 완료"}
-            message={
-              alertType === "fileSize"
-                ? "2MB 이하의 이미지만 업로드할 수 있어요."
-                : "프로필이 저장되었어요."
-            }
+            title={alertTitle}
+            message={alertMessage}
             onConfirm={handleAlertConfirm}
             onCancel={handleAlertConfirm}
           />

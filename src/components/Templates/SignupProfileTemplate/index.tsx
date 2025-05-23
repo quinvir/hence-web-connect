@@ -4,15 +4,15 @@ import InputField from "../../molecules/InputField";
 import Button from "../../atoms/Button";
 import ProfileImageUploader from "../../molecules/ProfileImageUploader";
 import { Form, InputFieldWrapper } from "./styles";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import GenderSelector from "../../molecules/GenderSelector";
 import MarketingAgreement from "../../molecules/MarketingAgreement";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../stores/userStore";
 import AlertModal from "../../molecules/AlertModal";
-import { useUploadProfileImage } from "../../../hooks/useUploadProfileImage";
 import { useSignup } from "../../../hooks/useSignup";
 import { errorCodeMap } from "../../../constants/errorCode";
+import { usePublicImageUpload } from "../../../hooks/usePublicImageUpload";
 
 const SignupProfileTemplate = () => {
   const {
@@ -46,7 +46,7 @@ const SignupProfileTemplate = () => {
 
   const { updateUser } = useUserStore();
 
-  const { mutateAsync: uploadImage } = useUploadProfileImage();
+  const { mutateAsync: uploadImage } = usePublicImageUpload();
   const signupUser = useSignup();
 
   const location = useLocation();
