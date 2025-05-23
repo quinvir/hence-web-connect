@@ -18,7 +18,7 @@ const LoginVisualSection = () => {
 
   return (
     <Wrapper>
-      <BackgroundImage $loaded={loaded} />
+      {loaded && <BackgroundImage />}
       <TextContainer>
         <Title>HENCE</Title>
         <SubTitle>Connect</SubTitle>

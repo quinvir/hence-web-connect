@@ -18,7 +18,7 @@ export const Wrapper = styled.section`
   overflow: hidden;
 `;
 
-export const BackgroundImage = styled.div<{ $loaded: boolean }>`
+export const BackgroundImage = styled.div`
   position: absolute;
   inset: 0;
   width: 100%;
@@ -28,8 +28,6 @@ export const BackgroundImage = styled.div<{ $loaded: boolean }>`
   background-position: center;
   background-repeat: no-repeat;
   z-index: 0;
-  opacity: ${({ $loaded }) => ($loaded ? 1 : 0)};
-  transition: opacity 0.4s ease-in;
 `;
 
 export const TextContainer = styled.div`
