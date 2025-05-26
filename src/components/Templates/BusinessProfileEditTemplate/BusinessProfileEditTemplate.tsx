@@ -59,7 +59,7 @@ const BusinessProfileEditTemplate = () => {
         <ProfileImageUploader
           image={image}
           setImage={setImage}
-          variant="default"
+          variant="business"
           onFileTooLarge={() => {
             setAlertType("fileSize");
             setAlertOpen(true);
