@@ -240,11 +240,6 @@ const BusinessProfileEditTemplate = () => {
           errorMessage={errors.kakaotalk?.message}
         />
 
-        <MarketingAgreement
-          control={control}
-          errorMessage={errors.marketingAgree?.message}
-        />
-
         <ButtonBox>
           <Button
             type="submit"
