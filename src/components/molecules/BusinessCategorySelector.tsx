@@ -33,7 +33,13 @@ const Option = styled.button<{ selected: boolean }>`
   cursor: pointer;
 `;
 
-const categoryOptions = ["푸드트럭", "플리마켓", "놀이", "공연", "기타"];
+const options = [
+  { value: "FOOD_TRUCK", label: "푸드트럭" },
+  { value: "FLEA_MARKET", label: "플리마켓" },
+  { value: "PLAY", label: "놀이" },
+  { value: "PERFORMANCE", label: "공연" },
+  { value: "ETC", label: "기타" },
+];
 
 interface Props {
   control: Control<any>;
@@ -45,18 +51,18 @@ const BusinessCategorySelector = ({ control, errorMessage }: Props) => {
     <Wrapper>
       <Label>사업 카테고리</Label>
       <Controller
-        name="category"
+        name="businessCategory"
         control={control}
         render={({ field }) => (
           <ButtonGroup>
-            {categoryOptions.map((item) => (
+            {options.map((item) => (
               <Option
-                key={item}
+                key={item.value}
                 type="button"
-                selected={field.value === item}
-                onClick={() => field.onChange(item)}
+                selected={field.value === item.value}
+                onClick={() => field.onChange(item.value)}
               >
-                {item}
+                {item.label}
               </Option>
             ))}
           </ButtonGroup>

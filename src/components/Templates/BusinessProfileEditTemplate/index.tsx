@@ -1,43 +1,61 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputField from "../../molecules/InputField";
 import ProfileImageUploader from "../../molecules/ProfileImageUploader";
 import Button from "../../atoms/Button";
 import { ButtonBox, Container, Form } from "./styles";
-import MarketingAgreement from "../../molecules/MarketingAgreement";
 import BusinessTypeSelector from "../../molecules/BusinessTypeSelector";
 import BusinessCategorySelector from "../../molecules/BusinessCategorySelector";
 import { useNavigate } from "react-router-dom";
 import AlertModal from "../../molecules/AlertModal";
 import TextareaField from "../../molecules/TextareaField";
+import { useUploadProfileImage } from "../../../hooks/usePrivateImageUpload";
+import { errorCodeMap } from "../../../constants/errorCode";
+import {
+  useBusinessProfile,
+  useCreateBusinessProfile,
+} from "../../../hooks/useBusinessProfile";
+import { useUserStore } from "../../../stores/userStore";
+import { useBusinessUserStore } from "../../../stores/businessUserStore";
 
 const BusinessProfileEditTemplate = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
+    setValue,
+    clearErrors,
+    watch,
+    reset,
+    formState,
   } = useForm({
     mode: "onChange",
+    shouldUnregister: true,
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
+      phoneNumber: "",
       address: "",
-      businessType: "corporate",
+      businessType: "CORPORATION",
       businessNumber: "",
-      category: "푸드트럭",
-      intro: "",
+      businessCategory: "FOOD_TRUCK",
+      introduction: "",
       instagram: "",
-      kakaotalk: "",
-      marketingAgree: "yes",
+      kakao: "",
     },
   });
 
   const [image, setImage] = useState<string | null>(null);
+
+  const showAlert = (title: string, message: string | string[]) => {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertOpen(true);
+  };
+
   const [alertOpen, setAlertOpen] = useState(false);
-  const [alertType, setAlertType] = useState<"fileSize" | "saveConfirm" | null>(
-    null
-  );
+  const [alertTitle, setAlertTitle] = useState("알림");
+  const [alertMessage, setAlertMessage] = useState<string | string[]>([]);
 
   const navigate = useNavigate();
 
@@ -45,11 +63,135 @@ const BusinessProfileEditTemplate = () => {
     setAlertOpen(false);
   };
 
-  const onSubmit = (data: any) => {
-    // console.log("비즈니스 프로필 데이터:", data);
+  const { mutate: createBusinessProfile } = useCreateBusinessProfile();
+  const { mutateAsync: uploadImage } = useUploadProfileImage();
 
-    setAlertType("saveConfirm");
-    setAlertOpen(true);
+  const businessType = watch("businessType");
+  const isSimplified = businessType === "SIMPLIFIED";
+
+  const errors = formState.errors;
+
+  // 개인&법인 <-> 간이과세자 버튼 전환시 입력 필드 비우기
+  useEffect(() => {
+    const errorExists = !!formState.errors.businessNumber;
+    const value = watch("businessNumber");
+
+    if (businessType === "SIMPLIFIED") {
+      if (errorExists || (value && !/^\d{6}$/.test(value))) {
+        setValue("businessNumber", "");
+        clearErrors("businessNumber");
+      }
+    } else {
+      if (errorExists || (value && !/^\d{3}-\d{2}-\d{5}$/.test(value))) {
+        setValue("businessNumber", "");
+        clearErrors("businessNumber");
+      }
+    }
+  }, [businessType]);
+
+  const { businessUser, setBusinessUser } = useBusinessUserStore();
+  const { data } = useBusinessProfile(businessUser?.id || "");
+
+  useEffect(() => {
+    if (businessUser) {
+      reset({
+        name: businessUser.name ?? "",
+        email: businessUser.email ?? "",
+        phoneNumber: businessUser.phoneNumber ?? "",
+        address: businessUser.address ?? "",
+        businessType: businessUser.businessType ?? "INDIVIDUAL",
+        businessNumber: businessUser.businessNumber ?? "",
+        businessCategory: businessUser.businessCategory ?? "FOOD_TRUCK",
+        introduction: businessUser.introduction ?? "",
+        instagram: businessUser.instagram ?? "",
+        kakao: businessUser.kakao ?? "",
+      });
+      setImage(businessUser.thumbImageUrl ?? null);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (data?.code === 200 && data.data) {
+      const fetched = data.data;
+      setBusinessUser(fetched);
+      reset({
+        name: fetched.name ?? "",
+        email: fetched.email ?? "",
+        phoneNumber: fetched.phoneNumber ?? "",
+        address: fetched.address ?? "",
+        businessType: fetched.businessType ?? "INDIVIDUAL",
+        businessNumber: fetched.businessNumber ?? "",
+        businessCategory: fetched.businessCategory ?? "FOOD_TRUCK",
+        introduction: fetched.introduction ?? "",
+        instagram: fetched.instagram ?? "",
+        kakao: fetched.kakao ?? "",
+      });
+      setImage(fetched.thumbImageUrl ?? null);
+    }
+  }, [data]);
+
+  const onSubmit = async (data: any) => {
+    let uploadedImageUrl = image ?? "";
+
+    try {
+      if (image && image.startsWith("data:")) {
+        const blob = await (await fetch(image)).blob();
+        const formData = new FormData();
+        formData.append("file", blob, "business-profile.png");
+
+        const res = await uploadImage(formData);
+        const { code, data } = res.data;
+        if (code !== 200) {
+          const msg =
+            errorCodeMap[code.toString()] ??
+            "이미지 업로드 중 오류가 발생했습니다.";
+          showAlert("Error", msg);
+          return;
+        }
+
+        uploadedImageUrl = data.url;
+      }
+    } catch (err) {
+      console.error("이미지 업로드 실패", err);
+      showAlert("Error", [
+        "프로필 이미지 업로드에 실패했습니다.",
+        "잠시 후 다시 시도해 주세요.",
+      ]);
+      return;
+    }
+
+    const payload = {
+      name: data.name,
+      email: data.email,
+      phoneNumber: data.phone,
+      address: data.address,
+      businessType: data.businessType,
+      businessNumber: data.businessNumber,
+      businessCategory: data.category,
+      introduction: data.intro ?? "",
+      instagram: data.instagram ?? "",
+      kakao: data.kakaotalk ?? "",
+      thumbImageUrl: uploadedImageUrl,
+    };
+
+    createBusinessProfile(payload, {
+      onSuccess: (res) => {
+        const { code, data } = res;
+
+        if (code === 200 && data) {
+          setBusinessUser(res.data);
+          showAlert("저장 완료", "비즈니스 프로필이 저장되었어요.");
+        }
+      },
+      onError: (err: any) => {
+        const msg = errorCodeMap[String(err.code)] ??
+          err.message ?? [
+            "비즈니스 프로필 등록에 실패했습니다.",
+            "다시 시도해 주세요.",
+          ];
+        showAlert("Error", msg);
+      },
+    });
   };
 
   return (
@@ -61,20 +203,18 @@ const BusinessProfileEditTemplate = () => {
           setImage={setImage}
           variant="business"
           onFileTooLarge={() => {
-            setAlertType("fileSize");
-            setAlertOpen(true);
+            showAlert(
+              "파일 용량 초과",
+              "2MB 이하의 이미지만 업로드할 수 있어요."
+            );
           }}
         />
 
         {alertOpen && (
           <AlertModal
             type="confirmOnly"
-            title={alertType === "fileSize" ? "파일 용량 초과" : "저장 완료"}
-            message={
-              alertType === "fileSize"
-                ? "2MB 이하의 이미지만 업로드할 수 있어요."
-                : "비즈니스 프로필이 저장되었어요."
-            }
+            title={alertTitle}
+            message={alertMessage}
             onConfirm={handleAlertConfirm}
             onCancel={handleAlertConfirm}
           />
@@ -127,7 +267,7 @@ const BusinessProfileEditTemplate = () => {
           placeholder="연락처를 입력하세요"
           control={control}
           signup
-          errorMessage={errors.phone?.message}
+          errorMessage={errors.phoneNumber?.message}
           rules={{
             required: "연락처는 필수입니다.",
             validate: (value) => {
@@ -189,27 +329,33 @@ const BusinessProfileEditTemplate = () => {
         <InputField
           label={
             <>
-              사업자 번호<span style={{ color: "#E60000" }}>*</span>
+              {isSimplified ? "생년월일(6자리)" : "사업자 번호"}
+              <span style={{ color: "#E60000" }}>*</span>
             </>
           }
           name="businessNumber"
           type="text"
-          placeholder="123-12-12345"
+          placeholder={isSimplified ? "900101" : "123-12-12345"}
           control={control}
           signup
+          isSimplified={isSimplified}
           errorMessage={errors.businessNumber?.message}
           rules={{
-            required: "사업자 번호는 필수입니다.",
+            required: isSimplified
+              ? "생년월일은 필수입니다."
+              : "사업자 번호는 필수입니다.",
             pattern: {
-              value: /^\d{3}-\d{2}-\d{5}$/,
-              message: "사업자등록번호 형식이 올바르지 않습니다.",
+              value: isSimplified ? /^\d{6}$/ : /^\d{3}-\d{2}-\d{5}$/,
+              message: isSimplified
+                ? "생년월일은 6자리 숫자로 입력해 주세요 (예: 900101)"
+                : "사업자등록번호 형식이 올바르지 않습니다.",
             },
           }}
         />
 
         <BusinessCategorySelector
           control={control}
-          errorMessage={errors.category?.message}
+          errorMessage={errors.businessCategory?.message}
         />
 
         <TextareaField
@@ -217,7 +363,7 @@ const BusinessProfileEditTemplate = () => {
           name="intro"
           placeholder="내 비즈니스에 대한 간단한 소개를 입력하세요"
           control={control}
-          errorMessage={errors.intro?.message}
+          errorMessage={errors.introduction?.message}
         />
 
         <InputField
@@ -237,7 +383,7 @@ const BusinessProfileEditTemplate = () => {
           placeholder="카카오 채널/오픈채팅 링크를 입력하세요"
           control={control}
           signup
-          errorMessage={errors.kakaotalk?.message}
+          errorMessage={errors.kakao?.message}
         />
 
         <ButtonBox>

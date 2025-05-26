@@ -10,10 +10,12 @@ import TextareaField from "../../molecules/TextareaField";
 import AlertModal from "../../molecules/AlertModal";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../stores/userStore";
-import { useUpdateProfile } from "../../../hooks/useUpdateProfile";
 import { errorCodeMap } from "../../../constants/errorCode";
-import { useUploadProfileImage } from "../../../hooks/useUploadProfileImage";
-import { useUserProfile } from "../../../hooks/useUserProfile";
+import { useUploadProfileImage } from "../../../hooks/usePrivateImageUpload";
+import {
+  useUpdateProfile,
+  useUserProfile,
+} from "../../../hooks/useUserProfile";
 
 const UserProfileEditTemplate = () => {
   const {
