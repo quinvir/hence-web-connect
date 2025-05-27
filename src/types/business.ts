@@ -17,6 +17,17 @@ export interface CreateBusinessProfilePayload {
   thumbImageUrl: string;
 }
 
+export interface CreateBusinessProfileApiResponse {
+  code: number;
+  data?: BusinessProfileResponse;
+  message?: string;
+  errors?: {
+    loc?: string[];
+    msg: string;
+    type?: string;
+  }[];
+}
+
 export interface BusinessProfileResponse {
   id: string;
   address: string | null;

@@ -14,6 +14,7 @@ import { errorCodeMap } from "../../../constants/errorCode";
 import {
   useBusinessProfile,
   useCreateBusinessProfile,
+  useUpdateBusinessProfile,
 } from "../../../hooks/useBusinessProfile";
 import { useUserStore } from "../../../stores/userStore";
 import { useBusinessUserStore } from "../../../stores/businessUserStore";
@@ -63,9 +64,6 @@ const BusinessProfileEditTemplate = () => {
     setAlertOpen(false);
   };
 
-  const { mutate: createBusinessProfile } = useCreateBusinessProfile();
-  const { mutateAsync: uploadImage } = useUploadProfileImage();
-
   const businessType = watch("businessType");
   const isSimplified = businessType === "SIMPLIFIED";
 
@@ -89,8 +87,16 @@ const BusinessProfileEditTemplate = () => {
     }
   }, [businessType]);
 
-  const { businessUser, setBusinessUser } = useBusinessUserStore();
+  const { businessUser, setBusinessUser, clearBusinessUser } =
+    useBusinessUserStore();
   const { data } = useBusinessProfile(businessUser?.id || "");
+
+  const { mutate: createBusinessProfile } = useCreateBusinessProfile();
+  const { mutate: updateBusinessProfile } = useUpdateBusinessProfile(
+    businessUser?.id || ""
+  );
+  const { mutateAsync: uploadImage } = useUploadProfileImage();
+  const isEdit = !!businessUser?.id;
 
   useEffect(() => {
     if (businessUser) {
@@ -127,6 +133,11 @@ const BusinessProfileEditTemplate = () => {
         kakao: fetched.kakao ?? "",
       });
       setImage(fetched.thumbImageUrl ?? null);
+    } else if (data?.code === 3000) {
+      // 벤더 정보 없음 ->  상태 초기화
+      clearBusinessUser();
+      reset();
+      setImage(null);
     }
   }, [data]);
 
@@ -163,35 +174,48 @@ const BusinessProfileEditTemplate = () => {
     const payload = {
       name: data.name,
       email: data.email,
-      phoneNumber: data.phone,
+      phoneNumber: data.phoneNumber,
       address: data.address,
       businessType: data.businessType,
       businessNumber: data.businessNumber,
-      businessCategory: data.category,
+      businessCategory: data.businessCategory,
       introduction: data.intro ?? "",
       instagram: data.instagram ?? "",
       kakao: data.kakaotalk ?? "",
       thumbImageUrl: uploadedImageUrl,
     };
 
-    createBusinessProfile(payload, {
-      onSuccess: (res) => {
-        const { code, data } = res;
-
-        if (code === 200 && data) {
-          setBusinessUser(res.data);
+    if (businessUser?.id) {
+      // 수정
+      updateBusinessProfile(payload, {
+        onSuccess: (profile) => {
+          showAlert("수정 완료", "비즈니스 프로필이 수정되었어요.");
+        },
+        onError: (err: any) => {
+          const msg =
+            err.errors?.map((e: any) => e.msg).join("\n") ??
+            errorCodeMap[String(err.code)] ??
+            err.message ??
+            "비즈니스 프로필 수정에 실패했습니다.";
+          showAlert("Error", msg);
+        },
+      });
+    } else {
+      // 등록
+      createBusinessProfile(payload, {
+        onSuccess: (profile) => {
           showAlert("저장 완료", "비즈니스 프로필이 저장되었어요.");
-        }
-      },
-      onError: (err: any) => {
-        const msg = errorCodeMap[String(err.code)] ??
-          err.message ?? [
-            "비즈니스 프로필 등록에 실패했습니다.",
-            "다시 시도해 주세요.",
-          ];
-        showAlert("Error", msg);
-      },
-    });
+        },
+        onError: (err: any) => {
+          const msg =
+            err.errors?.map((e: any) => e.msg).join("\n") ??
+            errorCodeMap[String(err.code)] ??
+            err.message ??
+            "비즈니스 프로필 등록에 실패했습니다.";
+          showAlert("Error", msg);
+        },
+      });
+    }
   };
 
   return (
@@ -262,7 +286,7 @@ const BusinessProfileEditTemplate = () => {
               연락처 <span style={{ color: "#E60000" }}>*</span>
             </>
           }
-          name="phone"
+          name="phoneNumber"
           type="text"
           placeholder="연락처를 입력하세요"
           control={control}
@@ -395,7 +419,7 @@ const BusinessProfileEditTemplate = () => {
             $borderRadius="10px"
             disabled={!isValid}
           >
-            프로필 저장하기
+            프로필 {isEdit ? "수정" : "등록"}하기
           </Button>
         </ButtonBox>
       </Form>

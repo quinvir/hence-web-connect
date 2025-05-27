@@ -1,5 +1,5 @@
 import {
-  BusinessProfileResponse,
+  CreateBusinessProfileApiResponse,
   CreateBusinessProfilePayload,
 } from "../../types/business";
 import client from "../client";
@@ -19,14 +19,10 @@ export const updateUserProfile = async (data: any) => {
 // 비즈니스 프로필 등록하기
 export const createBusinessProfile = async (
   data: CreateBusinessProfilePayload
-): Promise<{
-  code: number;
-  data: BusinessProfileResponse;
-  message?: string;
-}> => {
+): Promise<CreateBusinessProfileApiResponse> => {
   const response = await client.post("/api/v1/vendor", data);
 
-  console.log("비즈니스 프로필 등록 성공!", response);
+  // console.log("비즈니스 프로필 등록 성공!", response);
   return response.data;
 };
 
@@ -34,7 +30,7 @@ export const createBusinessProfile = async (
 export const getBusinessProfile = async (vendorId: string) => {
   const response = await client.get(`/api/v1/vendor/${vendorId}`);
 
-  console.log("비즈니스 프로필 정보 불러오기", response);
+  // console.log("비즈니스 프로필 정보 불러오기", response);
   return response.data;
 };
 
@@ -42,6 +38,6 @@ export const getBusinessProfile = async (vendorId: string) => {
 export const updateBusinessProfile = async (vendorId: string, data: any) => {
   const response = await client.patch(`/api/v1/vendor/${vendorId}`, data);
 
-  console.log("비즈니스 프로필 업데이트 성공!", response);
+  // console.log("비즈니스 프로필 업데이트 성공!", response);
   return response.data;
 };

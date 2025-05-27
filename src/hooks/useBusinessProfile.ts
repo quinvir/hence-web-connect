@@ -28,15 +28,22 @@ export const useCreateBusinessProfile = () => {
   );
 
   return useMutation<
-    { code: number; data: BusinessProfileResponse },
-    Error,
+    BusinessProfileResponse, // Success 타입
+    { code: number; message?: string; errors?: any[] }, // Error 타입
     CreateBusinessProfilePayload
   >({
-    mutationFn: createBusinessProfile,
-    onSuccess: (res) => {
-      if (res.code === 200 && res.data) {
-        setBusinessUser(res.data);
+    mutationFn: async (data) => {
+      const res = await createBusinessProfile(data);
+      const { code, data: profile, message, errors } = res;
+
+      if (code !== 200 || !profile) {
+        throw { code, message, errors };
       }
+
+      return profile;
+    },
+    onSuccess: (data) => {
+      setBusinessUser(data);
     },
   });
 };
@@ -48,16 +55,22 @@ export const useUpdateBusinessProfile = (vendorId: string) => {
   );
 
   return useMutation<
-    { code: number; data: BusinessProfileResponse },
-    Error,
+    BusinessProfileResponse,
+    { code: number; message?: string; errors?: { msg: string }[] },
     Partial<CreateBusinessProfilePayload>
   >({
-    mutationFn: (data) => updateBusinessProfile(vendorId, data),
-    onSuccess: (res) => {
-      const { code, data } = res;
-      if (code === 200 && data) {
-        setBusinessUser(data);
+    mutationFn: async (data) => {
+      const res = await updateBusinessProfile(vendorId, data);
+      const { code, data: profile, message, errors } = res;
+
+      if (code !== 200 || !profile) {
+        throw { code, message, errors };
       }
+
+      return profile;
+    },
+    onSuccess: (profile) => {
+      setBusinessUser(profile);
     },
   });
 };
