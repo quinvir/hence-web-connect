@@ -1,0 +1,39 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - distribution  # 또는 master, 메인 브랜치 이름에 따라 수정
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # 프로젝트에 맞는 Node.js 버전 선택
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+        env:
+          CI: false  # React 빌드 시 경고를 에러로 처리하지 않도록 설정
+
+      # AWS S3 배포 설정 (package.json에서 AWS S3 배포 스크립트가 있는 것을 확인했습니다)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2  # 사용하는 AWS 리전으로 수정
+
+      - name: Deploy to AWS S3
+        run: aws s3 cp --region ap-northeast-2 ./build s3://dev.hence.events/ --recursive
