@@ -39,3 +39,17 @@ export const ButtonBox = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+export const TempBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  button {
+    padding: 0px 16px;
+  }
+
+  button:hover {
+    background-color: #fffdc7;
+  }
+`;

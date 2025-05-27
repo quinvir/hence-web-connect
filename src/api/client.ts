@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const client = axios.create({
-  // baseURL: process.env.REACT_APP_API_BASE_URL,
-  baseURL: "",
+  baseURL: process.env.REACT_APP_API_BASE_URL,
+  // baseURL:
+  //   process.env.NODE_ENV === "production" ? "" : "https://api.hence.events/",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

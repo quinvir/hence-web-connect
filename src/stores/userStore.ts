@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 
 interface User {
   id: string;
+  vendorId?: string;
   email: string;
   name: string;
   provider: string;

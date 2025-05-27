@@ -16,7 +16,7 @@ export interface User {
   updatedAt: string;
 }
 
-export interface PatchUserProfilePayload {
+export interface UpdateUserProfilePayload {
   name: string;
   gender: "MALE" | "FEMALE";
   introduction?: string | null;
@@ -26,7 +26,7 @@ export interface PatchUserProfilePayload {
   profileImageUrl?: string | null;
 }
 
-export interface PatchUserResponse {
+export interface UpdateUserResponse {
   code: number;
   message: string;
   data: User;

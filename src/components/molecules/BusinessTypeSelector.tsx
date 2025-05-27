@@ -39,8 +39,9 @@ interface Props {
 
 const BusinessTypeSelector = ({ control, errorMessage }: Props) => {
   const options = [
-    { value: "corporate", label: "법인 사업자" },
-    { value: "personal", label: "개인 사업자" },
+    { value: "CORPORATION", label: "법인 사업자" },
+    { value: "INDIVIDUAL", label: "개인 사업자" },
+    { value: "SIMPLIFIED", label: "간이과세자" },
   ];
 
   return (

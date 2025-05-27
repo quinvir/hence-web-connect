@@ -48,6 +48,7 @@ interface Props {
   gap?: string;
   errorMessage?: string;
   control: Control<any>;
+  isSimplified?: boolean;
   rules?: RegisterOptions;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
   onBlur?: () => void;
@@ -64,6 +65,7 @@ const InputField = ({
   control,
   rules,
   onBlur,
+  isSimplified,
 }: Props) => {
   const hasError = !!errorMessage;
   const [isFocused, setIsFocused] = useState(false);
@@ -90,7 +92,10 @@ const InputField = ({
             $signup={signup}
             $error={hasError}
             inputMode={name === "email" ? "email" : undefined}
-            maxLength={name === "nickname" ? 20 : undefined}
+            maxLength={
+              // name === "birthDate" ? 6 : name === "nickname" ? 20 : undefined
+              name === "birthDate" ? 10 : name === "nickname" ? 20 : undefined
+            }
             onChange={(e) => {
               let value = e.target.value;
               let processedValue = value;
@@ -176,19 +181,25 @@ const InputField = ({
                   processedValue = numbersOnly;
                 }
               } else if (name === "businessNumber") {
-                const numbersOnly = value.replace(/[^0-9]/g, "").slice(0, 10);
-                if (numbersOnly.length <= 3) {
+                if (isSimplified) {
+                  // const numbersOnly = value.replace(/[^0-9]/g, "").slice(0, 6);
+                  const numbersOnly = value.replace(/[^0-9]/g, "").slice(0, 10);
                   processedValue = numbersOnly;
-                } else if (numbersOnly.length <= 5) {
-                  processedValue = numbersOnly.replace(
-                    /(\d{3})(\d{1,2})/,
-                    "$1-$2"
-                  );
                 } else {
-                  processedValue = numbersOnly.replace(
-                    /(\d{3})(\d{2})(\d{1,5})/,
-                    "$1-$2-$3"
-                  );
+                  const numbersOnly = value.replace(/[^0-9]/g, "").slice(0, 10);
+                  if (numbersOnly.length <= 3) {
+                    processedValue = numbersOnly;
+                  } else if (numbersOnly.length <= 5) {
+                    processedValue = numbersOnly.replace(
+                      /(\d{3})(\d{1,2})/,
+                      "$1-$2"
+                    );
+                  } else {
+                    processedValue = numbersOnly.replace(
+                      /(\d{3})(\d{2})(\d{1,5})/,
+                      "$1-$2-$3"
+                    );
+                  }
                 }
               } else {
                 processedValue = value.replace(/^\s+/, ""); // 앞 공백 제거
