@@ -122,7 +122,7 @@ const ImageBox = styled.div<{ $isUserProfile?: boolean }>`
 interface Props {
   image: string | null;
   setImage: (url: string | null) => void;
-  variant?: "default" | "user";
+  variant?: "default" | "user" | "business";
   onFileTooLarge?: () => void;
   onError?: (message: string) => void;
 }
@@ -163,7 +163,7 @@ const ProfileImageUploader = ({
     <Wrapper>
       <ProfileImageLabel>
         <p>
-          프로필 사진 <span>(선택)</span>
+          {variant === "business" ? "대표" : "프로필"} 사진 <span>(선택)</span>
         </p>
       </ProfileImageLabel>
       {image ? (
@@ -197,7 +197,9 @@ const ProfileImageUploader = ({
                   : "/assets/images/img/upload-image.png"
               }
               alt="placeholder"
-              style={{ width: "32px", height: "32px" }}
+              width={32}
+              height={32}
+              loading="eager"
             />
           </ImageBox>
           <Instruction>

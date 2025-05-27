@@ -3,13 +3,14 @@ import styled from "styled-components";
 export const FormCardWrapper = styled.div`
   position: relative;
   width: 640px;
-  height: auto;
+  height: 640px;
   min-height: 640px;
   min-width: 500px;
   max-width: 720px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   padding: 64px 0;
   background-color: #fff;
   border-radius: 20px;

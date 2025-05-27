@@ -3,12 +3,12 @@ import styled from "styled-components";
 export const Wrapper = styled.section`
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   color: #fff;
   text-align: center;
   text-shadow: 0px 4px 20px rgba(0, 0, 0, 0.6);
@@ -18,12 +18,15 @@ export const Wrapper = styled.section`
   overflow: hidden;
 `;
 
-export const BackgroundImage = styled.img`
+export const BackgroundImage = styled.div`
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  background-image: url("/assets/images/login/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: 0;
 `;
 

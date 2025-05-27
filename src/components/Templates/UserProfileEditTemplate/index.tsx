@@ -10,10 +10,12 @@ import TextareaField from "../../molecules/TextareaField";
 import AlertModal from "../../molecules/AlertModal";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../stores/userStore";
-import { useUpdateProfile } from "../../../hooks/useUpdateProfile";
 import { errorCodeMap } from "../../../constants/errorCode";
-import { useUploadProfileImage } from "../../../hooks/useUploadProfileImage";
-import { useUserProfile } from "../../../hooks/useUserProfile";
+import { useUploadProfileImage } from "../../../hooks/usePrivateImageUpload";
+import {
+  useUpdateProfile,
+  useUserProfile,
+} from "../../../hooks/useUserProfile";
 
 const UserProfileEditTemplate = () => {
   const {
@@ -39,7 +41,7 @@ const UserProfileEditTemplate = () => {
   const [alertTitle, setAlertTitle] = useState("알림");
   const [alertMessage, setAlertMessage] = useState<string | string[]>([]);
 
-  const { user, updateUser } = useUserStore();
+  const { user, updateUser, clearUser } = useUserStore();
   const { data, isLoading } = useUserProfile();
 
   // console.log("User 정보 get:", user);
@@ -73,8 +75,14 @@ const UserProfileEditTemplate = () => {
         marketingAgree: fetched.marketingConsent ? "yes" : "no",
       });
       setImage(fetched.profileImageUrl ?? null);
+    } else if (data?.code === 3000) {
+      // 사용자 정보 없음 → 상태 초기화
+      clearUser();
+      reset();
+      setImage(null);
     }
   }, [data]);
+
   const navigate = useNavigate();
 
   const handleAlertConfirm = () => {

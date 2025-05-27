@@ -1,4 +1,4 @@
-import BusinessProfileEditTemplate from "../../components/Templates/BusinessProfileEditTemplate/BusinessProfileEditTemplate";
+import BusinessProfileEditTemplate from "../../components/Templates/BusinessProfileEditTemplate";
 import DefaultLayout from "../../components/Templates/DefaultLayout";
 
 const BusinessProfileEditPage = () => {

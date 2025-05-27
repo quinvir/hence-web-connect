@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   BackgroundImage,
   SubTitle,
@@ -7,12 +8,17 @@ import {
 } from "./styles";
 
 const LoginVisualSection = () => {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/assets/images/login/background.jpg";
+    img.onload = () => setLoaded(true);
+  }, []);
+
   return (
     <Wrapper>
-      <BackgroundImage
-        src="/assets/images/login/background.jpg"
-        alt="Main background"
-      />
+      {loaded && <BackgroundImage />}
       <TextContainer>
         <Title>HENCE</Title>
         <SubTitle>Connect</SubTitle>
