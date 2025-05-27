@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import InputField from "../../molecules/InputField";
 import ProfileImageUploader from "../../molecules/ProfileImageUploader";
 import Button from "../../atoms/Button";
-import { ButtonBox, Container, Form } from "./styles";
+import { ButtonBox, Container, Form, TempBox } from "./styles";
 import BusinessTypeSelector from "../../molecules/BusinessTypeSelector";
 import BusinessCategorySelector from "../../molecules/BusinessCategorySelector";
 import { useNavigate } from "react-router-dom";
@@ -220,7 +220,20 @@ const BusinessProfileEditTemplate = () => {
 
   return (
     <Container>
-      <h1>비즈니스 기본 정보</h1>
+      {/* <h1>비즈니스 기본 정보</h1> */}
+      <TempBox>
+        <h1>비즈니스 기본 정보</h1>
+        <Button
+          onClick={() => navigate("/products/new")}
+          width="150px"
+          height="40px"
+          $backgroudnColor="#fcfbd9"
+          fontSize="15px"
+          fontWeight={600}
+        >
+          + 판매 물품 추가
+        </Button>
+      </TempBox>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <ProfileImageUploader
           image={image}
