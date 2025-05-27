@@ -3,7 +3,7 @@
 # 환경 변수 파일
 .env
 .env.development
-.env.production
+# .env.production
 .env.staging
 .env.local
 .env.development.local
