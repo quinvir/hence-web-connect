@@ -12,7 +12,7 @@ import {
 } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useCheckEmail } from "../../../hooks/useCheckEmail";
+import { useCheckEmail } from "../../../hooks/auth/useCheckEmail";
 
 const SignupEmailTemplate = () => {
   const {

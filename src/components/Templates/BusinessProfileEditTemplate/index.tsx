@@ -9,13 +9,13 @@ import BusinessCategorySelector from "../../molecules/BusinessCategorySelector";
 import { useNavigate } from "react-router-dom";
 import AlertModal from "../../molecules/AlertModal";
 import TextareaField from "../../molecules/TextareaField";
-import { useUploadProfileImage } from "../../../hooks/usePrivateImageUpload";
+import { useUploadProfileImage } from "../../../hooks/image/usePrivateImageUpload";
 import { errorCodeMap } from "../../../constants/errorCode";
 import {
   useBusinessProfile,
   useCreateBusinessProfile,
   useUpdateBusinessProfile,
-} from "../../../hooks/useBusinessProfile";
+} from "../../../hooks/profile/useBusinessProfile";
 import { useUserStore } from "../../../stores/userStore";
 import { useBusinessUserStore } from "../../../stores/businessUserStore";
 

@@ -11,7 +11,7 @@ import {
   UnderlinedTextButton,
 } from "./styles";
 import PasswordField from "../../molecules/PasswordField";
-import { useLogin } from "../../../hooks/useLogin";
+import { useLogin } from "../../../hooks/auth/useLogin";
 import { useState } from "react";
 import AlertModal from "../../molecules/AlertModal";
 import { errorCodeMap } from "../../../constants/errorCode";
