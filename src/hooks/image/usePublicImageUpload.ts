@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { uploadImageToPublicS3 } from "../api/uplaod/upload.api";
+import { uploadImageToPublicS3 } from "../../api/uplaod/upload.api";
 
 export const usePublicImageUpload = () => {
   return useMutation({

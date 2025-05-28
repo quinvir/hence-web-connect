@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { AuthAPI } from "../api";
+import { AuthAPI } from "../../api";
 
 export const useCheckEmail = (email: string, enabled: boolean) => {
   return useQuery({

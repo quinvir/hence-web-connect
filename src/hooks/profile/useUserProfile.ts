@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUserProfile, updateUserProfile } from "../api/auth/profile.api";
-import { useUserStore } from "../stores/userStore";
-import { UpdateUserProfilePayload, User } from "../types/user";
+import { getUserProfile, updateUserProfile } from "../../api/auth/profile.api";
+import { useUserStore } from "../../stores/userStore";
+import { UpdateUserProfilePayload, User } from "../../types/user";
 
 // 개인 프로필 정보 가져오기
 export const useUserProfile = () => {

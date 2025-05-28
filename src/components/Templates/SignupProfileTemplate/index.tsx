@@ -10,9 +10,9 @@ import MarketingAgreement from "../../molecules/MarketingAgreement";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUserStore } from "../../../stores/userStore";
 import AlertModal from "../../molecules/AlertModal";
-import { useSignup } from "../../../hooks/useSignup";
+import { useSignup } from "../../../hooks/auth/useSignup";
 import { errorCodeMap } from "../../../constants/errorCode";
-import { usePublicImageUpload } from "../../../hooks/usePublicImageUpload";
+import { usePublicImageUpload } from "../../../hooks/image/usePublicImageUpload";
 
 const SignupProfileTemplate = () => {
   const {

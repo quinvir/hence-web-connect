@@ -29,12 +29,13 @@ export const Form = styled.form`
 
 interface LayoutProps {
   $mode: "edit" | "view";
+  $showDelete?: boolean;
 }
 
 export const HeaderRow = styled.div<LayoutProps>`
   display: grid;
   grid-template-columns: ${({ $mode }) =>
-    $mode === "view" ? "80px 1fr 1fr 50px" : "80px 1fr 1fr"};
+    $mode === "edit" ? "80px 1fr 1fr 50px" : "80px 1fr 1fr"};
   gap: 12px;
   margin-bottom: 8px;
 
@@ -57,8 +58,9 @@ export const ItemBox = styled.div`
 
 export const InputFieldBox = styled.div<LayoutProps>`
   display: grid;
-  grid-template-columns: ${({ $mode }) =>
-    $mode === "view" ? "80px 1fr 1fr 50px" : "80px 1fr 1fr"};
+  grid-template-columns: ${({ $mode, $showDelete }) =>
+    $mode === "edit" && $showDelete ? "80px 1fr 1fr 50px" : "80px 1fr 1fr"};
+
   gap: 12px;
   align-items: center;
 

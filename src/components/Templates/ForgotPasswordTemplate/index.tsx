@@ -12,8 +12,8 @@ import AlertModal from "../../molecules/AlertModal";
 import InputField from "../../molecules/InputField";
 import { useForm } from "react-hook-form";
 import Button from "../../atoms/Button";
-import { useCheckEmail } from "../../../hooks/useCheckEmail";
-import { usePasswordReset } from "../../../hooks/usePasswordReset";
+import { useCheckEmail } from "../../../hooks/auth/useCheckEmail";
+import { usePasswordReset } from "../../../hooks/auth/usePasswordReset";
 
 const ForgotPasswordTemplate = () => {
   const {

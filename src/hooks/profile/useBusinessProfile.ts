@@ -1,14 +1,14 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  getBusinessProfile,
   createBusinessProfile,
+  getBusinessProfile,
   updateBusinessProfile,
-} from "../api/auth/profile.api";
-import { useBusinessUserStore } from "../stores/businessUserStore";
+} from "../../api/auth/profile.api";
+import { useBusinessUserStore } from "../../stores/businessUserStore";
 import {
   BusinessProfileResponse,
   CreateBusinessProfilePayload,
-} from "../types/business";
+} from "../../types/business";
 
 // 비즈니스 프로필 조회
 export const useBusinessProfile = (vendorId: string) => {
