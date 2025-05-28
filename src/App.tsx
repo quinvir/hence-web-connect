@@ -8,6 +8,7 @@ import SignupProfile from "./pages/SignupProfile";
 import BusinessProfileEditPage from "./pages/BusinessProfileEditPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ProductCreatePage from "./pages/ProductCreatePage";
+import AuthCallbackPage from "./pages/AuthCallbackPage ";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signup-profile" element={<SignupProfile />} />
         <Route path="/welcome" element={<Welcome />} />
+        <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route
           path="/profile/business/edit"
           element={<BusinessProfileEditPage />}

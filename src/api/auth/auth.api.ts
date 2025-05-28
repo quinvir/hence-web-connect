@@ -1,3 +1,4 @@
+import { SocialLoginRequest, SocialLoginResponse } from "../../types/auth";
 import client from "../client";
 
 export interface SignupPayload {
@@ -32,4 +33,17 @@ export const login = (data: LoginPayload) => {
 // 비밀번호 재설정 링크 요청
 export const requestPasswordReset = (email: string) => {
   return client.post("/api/v1/user/password-reset", { email });
+};
+
+type RawResponse<T> = {
+  code: number;
+  message: string;
+  data: T | null;
+};
+// 소셜 로그인
+export const socialLogin = async (
+  data: SocialLoginRequest
+): Promise<RawResponse<SocialLoginResponse>> => {
+  const response = await client.post("/api/v1/user/social", data);
+  return response.data;
 };

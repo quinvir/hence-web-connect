@@ -54,12 +54,6 @@ const SignupProfileTemplate = () => {
 
   const { email, password } = location.state || {};
 
-  // 새로고침시 state 사라짐 -> 이전 화면으로 이동
-  if (!email || !password) {
-    navigate("/signup", { replace: true });
-    return null;
-  }
-
   const onSubmit = async (data: any) => {
     let uploadedImageUrl = "";
 
