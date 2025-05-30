@@ -8,6 +8,7 @@ import SignupProfile from "./pages/SignupProfile";
 import BusinessProfileEditPage from "./pages/BusinessProfileEditPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ProductCreatePage from "./pages/ProductCreatePage";
+import SettingsPage from "./pages/SettingsPage ";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/products/new" element={<ProductCreatePage />} />
+        <Route path="/settings" element={<SettingsPage />} />
 
         {/* 공통 레이아웃 */}
         <Route element={<DefaultLayout />}>
