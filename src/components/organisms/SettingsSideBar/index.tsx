@@ -1,3 +1,4 @@
+import { useUserStore } from "../../../stores/userStore";
 import { MenuItem, MenuList, Title, Wrapper } from "./styles";
 
 type MenuKey = "account" | "terms" | "privacy" | "marketing" | "version";
@@ -16,24 +17,30 @@ const menuItems: { key: MenuKey; label: string; disabled?: boolean }[] = [
 ];
 
 const SettingsSidebar = ({ selected, onSelect }: SettingsSidebarProps) => {
+  const { user } = useUserStore();
+
   return (
     <Wrapper>
       <Title>메뉴</Title>
       <MenuList>
-        {menuItems.map((item) => (
-          <MenuItem
-            key={item.key}
-            $active={selected === item.key}
-            $disabled={item.disabled}
-            onClick={() => {
-              if (!item.disabled) {
-                onSelect(item.key);
-              }
-            }}
-          >
-            {item.label}
-          </MenuItem>
-        ))}
+        {menuItems.map((item) => {
+          if (item.key === "account" && !user) return null;
+
+          return (
+            <MenuItem
+              key={item.key}
+              $active={selected === item.key}
+              $disabled={item.disabled}
+              onClick={() => {
+                if (!item.disabled) {
+                  onSelect(item.key);
+                }
+              }}
+            >
+              {item.label}
+            </MenuItem>
+          );
+        })}
       </MenuList>
     </Wrapper>
   );

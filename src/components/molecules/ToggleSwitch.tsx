@@ -22,7 +22,7 @@ const Switch = styled.input`
     left: 3px;
     width: 18px;
     height: 18px;
-    background: #f5f5f5;
+    background: #fff;
     border-radius: 50%;
     transition: 0.3s;
   }

@@ -33,3 +33,13 @@ export const login = (data: LoginPayload) => {
 export const requestPasswordReset = (email: string) => {
   return client.post("/api/v1/user/password-reset", { email });
 };
+
+// 로그아웃
+export const logout = () => {
+  return client.post("/api/v1/user/logout");
+};
+
+// 회원탈퇴
+export const withdrawUser = () => {
+  return client.delete("/api/v1/user/withdraws");
+};

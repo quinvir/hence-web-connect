@@ -22,7 +22,7 @@ interface User {
 
 interface UserState {
   user: User | null;
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void;
   updateUser: (partial: Partial<User>) => void;
   clearUser: () => void;
 }
