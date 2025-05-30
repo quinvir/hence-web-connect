@@ -8,7 +8,7 @@ export const useLogin = () => {
     onSuccess: (response) => {
       const { code, data, message } = response.data;
 
-      console.log("data", response.data);
+      // console.log("data", response.data);
 
       if (code !== 200 || !data) {
         throw { code, message };

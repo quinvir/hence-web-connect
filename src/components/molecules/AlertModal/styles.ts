@@ -51,6 +51,7 @@ export const Message = styled.div`
   font-weight: 400;
   line-height: 140%;
   letter-spacing: -0.25px;
+  text-align: center;
 `;
 
 export const ButtonGroup = styled.div<{
